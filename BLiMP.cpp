@@ -13,6 +13,39 @@ class MyFrame : public wxFrame
 {
 public:
     MyFrame();
+    void OnDropFiles(wxDropFilesEvent& event) // handles the files you drop
+    {
+        if (event.GetNumberOfFiles() > 0) {
+
+            wxString* dropped = event.GetFiles();
+            wxASSERT(dropped);
+
+            wxBusyCursor busyCursor;
+            wxWindowDisabler disabler;
+           // wxBusyInfo busyInfo(_("Adding files, wait please..."));
+
+            wxString name;
+            wxArrayString files;
+
+            for (int i = 0; i < event.GetNumberOfFiles(); i++) {
+                name = dropped[i];
+                if (wxFileExists(name)) {
+                    files.push_back(name);
+                }
+                else if (wxDirExists(name)){
+                    //  wxDir::GetAllFiles(name, &files);
+                }
+                 
+            }
+
+            wxTextCtrl* textCtrl = dynamic_cast<wxTextCtrl*>(event.GetEventObject());
+            wxASSERT(textCtrl);
+            textCtrl->Clear();
+            for (size_t i = 0; i < files.size(); i++) {
+                *textCtrl << files[i] << wxT('\n');
+            }
+        }
+    }
 private:
     void OnHello(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
@@ -48,6 +81,17 @@ MyFrame::MyFrame()
     Bind(wxEVT_MENU, &MyFrame::OnHello, this, ID_Hello);
     Bind(wxEVT_MENU, &MyFrame::OnAbout, this, wxID_ABOUT);
     Bind(wxEVT_MENU, &MyFrame::OnExit, this, wxID_EXIT);
+    wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
+    //Drag and drop write out
+    wxTextCtrl* dropTarget = new wxTextCtrl(this, wxID_ANY, _("Drop files onto me!"), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY);
+    dropTarget->DragAcceptFiles(true);
+    pSizer->Add(dropTarget, 1, wxEXPAND, 0);
+
+    SetSizer(pSizer);
+    Layout();
+    Centre();
+
+    dropTarget->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(MyFrame::OnDropFiles), NULL, this);
 }
 void MyFrame::OnExit(wxCommandEvent& event)
 {
