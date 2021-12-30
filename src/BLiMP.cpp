@@ -4,6 +4,11 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include "../include/AudioSystem.h"
+#include <iostream>
+#include <SDL.h>
+#include <SDL_mixer.h>
+
 class MyApp : public wxApp
 {
 public:
@@ -17,12 +22,15 @@ private:
     void OnHello(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
+
+    SoundEffect _sound{ "sine440hz.wav" };;
 };
 enum
 {
     ID_Hello = 1
 };
-wxIMPLEMENT_APP(MyApp);
+
+wxIMPLEMENT_APP_NO_MAIN(MyApp);
 bool MyApp::OnInit()
 {
     MyFrame* frame = new MyFrame();
@@ -61,4 +69,33 @@ void MyFrame::OnAbout(wxCommandEvent& event)
 void MyFrame::OnHello(wxCommandEvent& event)
 {
     wxLogMessage("Hello world from wxWidgets!");
+    _sound.play();
+}
+
+int main(int argc, char** argv) {
+    //TODO: Don't hardcode audio parameters.
+    constexpr int SAMPLE_RATE = 44100;
+    constexpr int CHANNELS = 2;
+    constexpr int CHUNK_SIZE = 2048;
+
+    //Init SDL2 systems
+    if (SDL_Init(SDL_INIT_AUDIO) < 0)
+    {
+        std::cerr << "Could not initialize SDL.\n";
+        return 1;
+    }
+    if (Mix_OpenAudio(SAMPLE_RATE, MIX_DEFAULT_FORMAT, CHANNELS, CHUNK_SIZE) < 0)
+    {
+        std::cerr << "SDL_mixer could not initialize!" <<
+            "SDL_mixer Error : " << Mix_GetError();
+        return 1;
+    }
+
+    //Run main window
+    wxEntry(argc, argv);
+    //Cleanup
+
+    Mix_Quit();
+    SDL_Quit();
+    return 0;
 }

@@ -18,9 +18,15 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\AudioSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BLiMP.cpp">
+    <ClCompile Include="src\BLiMP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AudioSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
