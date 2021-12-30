@@ -2,9 +2,10 @@
 * This file is mostly just a wrapper to make it easier
 * to use SDL_mixer in a C++-like fashion.
 */
+#include <filesystem>
+#include <memory>
 #include <SDL.h>
 #include <SDL_mixer.h>
-#include <string_view>
 #include <vector>
 
 //SDL_Mixer expects you to use Mix_Music for longer files and Mix_Chunk
@@ -19,7 +20,7 @@ class MusicFile : public AudioFile {
 private:
 	Mix_Music* _music;
 public:
-	MusicFile(std::string_view path);
+	MusicFile(std::filesystem::path filePath);
 	~MusicFile();
 
 	void pause() override;
@@ -31,7 +32,7 @@ class SoundEffect : public AudioFile {
 private:
 	Mix_Chunk* _sound;
 public:
-	SoundEffect(std::string_view path);
+	SoundEffect(std::filesystem::path filePath);
 	~SoundEffect();
 
 	void pause() override;
@@ -41,7 +42,11 @@ public:
 
 class AudioSystem {
 private:
-	std::vector<AudioFile> _soundFiles;
+	std::vector<std::unique_ptr<AudioFile>> _soundFiles;
 public:
-	AudioSystem();
+	AudioSystem() = default;
+
+	void addFile(std::filesystem::path filePath);
+	void playFile(size_t index);
+	void removeFile(size_t index);
 };
