@@ -24,7 +24,7 @@ private:
 	void OnExit(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
 
-	AudioSystem _audioSystem;
+	blimp::AudioSystem _audioSystem;
 };
 
 enum
