@@ -13,43 +13,15 @@ class MyFrame : public wxFrame
 {
 public:
     MyFrame();
-    void OnDropFiles(wxDropFilesEvent& event) // handles the files you drop
-    {
-        if (event.GetNumberOfFiles() > 0) {
-
-            wxString* dropped = event.GetFiles();
-            wxASSERT(dropped);
-
-            wxBusyCursor busyCursor;
-            wxWindowDisabler disabler;
-           // wxBusyInfo busyInfo(_("Adding files, wait please..."));
-
-            wxString name;
-            wxArrayString files;
-
-            for (int i = 0; i < event.GetNumberOfFiles(); i++) {
-                name = dropped[i];
-                if (wxFileExists(name)) {
-                    files.push_back(name);
-                }
-                else if (wxDirExists(name)){
-                    //  wxDir::GetAllFiles(name, &files);
-                }
-                 
-            }
-
-            wxTextCtrl* textCtrl = dynamic_cast<wxTextCtrl*>(event.GetEventObject());
-            wxASSERT(textCtrl);
-            textCtrl->Clear();
-            for (size_t i = 0; i < files.size(); i++) {
-                *textCtrl << files[i] << wxT('\n');
-            }
-        }
-    }
+   
 private:
+    //Menu code start
     void OnHello(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
+    //Menu code stop
+    void OpenFileHandeler(wxCommandEvent& event);
+    void OnDropFiles(wxDropFilesEvent& event);
 };
 enum
 {
@@ -64,8 +36,8 @@ bool MyApp::OnInit()
 }
 MyFrame::MyFrame()
     : wxFrame(NULL, wxID_ANY, "Hello World")
-{
-    wxMenu* menuFile = new wxMenu;
+{ //Menu code start
+    wxMenu* menuFile = new wxMenu;       
     menuFile->Append(ID_Hello, "&Hello...\tCtrl-H",
         "Help string shown in status bar for this menu item");
     menuFile->AppendSeparator();
@@ -82,8 +54,13 @@ MyFrame::MyFrame()
     Bind(wxEVT_MENU, &MyFrame::OnAbout, this, wxID_ABOUT);
     Bind(wxEVT_MENU, &MyFrame::OnExit, this, wxID_EXIT);
     wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
+    //Menu code stop
+
+
+
     //Drag and drop write out
     wxTextCtrl* dropTarget = new wxTextCtrl(this, wxID_ANY, _("Drop files onto me!"), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY);
+    
     dropTarget->DragAcceptFiles(true);
     pSizer->Add(dropTarget, 1, wxEXPAND, 0);
 
@@ -92,6 +69,13 @@ MyFrame::MyFrame()
     Centre();
 
     dropTarget->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(MyFrame::OnDropFiles), NULL, this);
+    //Btn Testing start
+
+    wxButton* fileBtn = new wxButton(this, wxID_FILE, "OpenFileBtn", wxPoint(2, 8), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
+
+    // fileBtn->Create(this, wxID_FILE, "OpenFileBtn", wxPoint(2,8), wxDefaultSize,1L,wxDefaultValidator,"FileOpener");
+    fileBtn->SetSize(100, 4);
+    Bind(wxEVT_BUTTON, &MyFrame::OpenFileHandeler, this, wxID_FILE);
 }
 void MyFrame::OnExit(wxCommandEvent& event)
 {
@@ -106,3 +90,40 @@ void MyFrame::OnHello(wxCommandEvent& event)
 {
     wxLogMessage("Hello world from wxWidgets!");
 }
+void MyFrame::OpenFileHandeler(wxCommandEvent& event) {
+
+}
+void MyFrame::OnDropFiles(wxDropFilesEvent& event)// Handels the files you drop
+{
+    if (event.GetNumberOfFiles() > 0) {
+
+        wxString* dropped = event.GetFiles();
+        wxASSERT(dropped);
+
+        wxBusyCursor busyCursor;
+        wxWindowDisabler disabler;
+        // wxBusyInfo busyInfo(_("Adding files, wait please..."));
+
+        wxString name;
+        wxArrayString files;
+
+        for (int i = 0; i < event.GetNumberOfFiles(); i++) {
+            name = dropped[i];
+            if (wxFileExists(name)) {
+                files.push_back(name);
+            }
+            else if (wxDirExists(name)) {
+                //  wxDir::GetAllFiles(name, &files);
+            }
+
+        }
+
+        wxTextCtrl* textCtrl = dynamic_cast<wxTextCtrl*>(event.GetEventObject());
+        wxASSERT(textCtrl);
+        textCtrl->Clear();
+        for (size_t i = 0; i < files.size(); i++) {
+            *textCtrl << files[i] << wxT('\n');
+        }
+    }
+}
+
