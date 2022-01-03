@@ -95,7 +95,10 @@ void MyFrame::OnHello(wxCommandEvent& event)
 }
 void MyFrame::OpenFileHandeler(wxCommandEvent& event)// Handles the btn
 {
-
+    
+    wxFileDialog
+        openFileDialog(this, _("Open XYZ file"), "", "",
+            "TXT files (*.txt)|*.txt", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 }
 void MyFrame::OnDropFiles(wxDropFilesEvent& event)// Handels the files you drop
 {
