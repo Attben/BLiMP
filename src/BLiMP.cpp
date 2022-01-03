@@ -123,7 +123,7 @@ void MyFrame::OnDropFiles(wxDropFilesEvent& event)// Handels the files you drop
         for (int i = 0; i < event.GetNumberOfFiles(); i++) {
             name = dropped[i].ToStdString();
             if (wxFileExists(name)) {
-                _audioSystem.addFile("sine440hz.wav");
+                _audioSystem.addFile(name);
                 files.push_back(name);
             }
             else if (wxDirExists(name)) {
