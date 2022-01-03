@@ -93,7 +93,8 @@ void MyFrame::OnHello(wxCommandEvent& event)
 {
     wxLogMessage("Hello world from wxWidgets!");
 }
-void MyFrame::OpenFileHandeler(wxCommandEvent& event) {
+void MyFrame::OpenFileHandeler(wxCommandEvent& event)// Handles the btn
+{
 
 }
 void MyFrame::OnDropFiles(wxDropFilesEvent& event)// Handels the files you drop
