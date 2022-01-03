@@ -53,12 +53,13 @@ MyFrame::MyFrame()
     Bind(wxEVT_MENU, &MyFrame::OnHello, this, ID_Hello);
     Bind(wxEVT_MENU, &MyFrame::OnAbout, this, wxID_ABOUT);
     Bind(wxEVT_MENU, &MyFrame::OnExit, this, wxID_EXIT);
-    wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
+   
     //Menu code stop
 
 
 
     //Drag and drop write out
+    wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
     wxTextCtrl* dropTarget = new wxTextCtrl(this, wxID_ANY, _("Drop files onto me!"), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY);
     
     dropTarget->DragAcceptFiles(true);
@@ -72,9 +73,11 @@ MyFrame::MyFrame()
     //Btn Testing start
 
     wxButton* fileBtn = new wxButton(this, wxID_FILE, "OpenFileBtn", wxPoint(2, 8), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
-
+    
     // fileBtn->Create(this, wxID_FILE, "OpenFileBtn", wxPoint(2,8), wxDefaultSize,1L,wxDefaultValidator,"FileOpener");
     fileBtn->SetSize(100, 4);
+    pSizer->Add(fileBtn, 1, 0);
+    SetSizer(pSizer);
     Bind(wxEVT_BUTTON, &MyFrame::OpenFileHandeler, this, wxID_FILE);
 }
 void MyFrame::OnExit(wxCommandEvent& event)
