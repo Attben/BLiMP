@@ -4,6 +4,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include "../include/AudioSystem.h"
+#include <SDL.h>
+#include <SDL_mixer.h>
 class MyApp : public wxApp
 {
 public:
@@ -29,7 +32,7 @@ enum
 {
     ID_Hello = 1
 };
-wxIMPLEMENT_APP(MyApp);
+wxIMPLEMENT_APP_NO_MAIN (MyApp);
 bool MyApp::OnInit()
 {
     MyFrame* frame = new MyFrame();
@@ -81,8 +84,6 @@ MyFrame::MyFrame()
     pSizer->Add(fileBtn, 1, 0);
     SetSizer(pSizer);
     Bind(wxEVT_BUTTON, &MyFrame::OpenFileHandeler, this, wxID_FILE);
-	
-	_audioSystem.addFile("sine440hz.wav");
 }
 void MyFrame::OnExit(wxCommandEvent& event)
 {
@@ -116,12 +117,13 @@ void MyFrame::OnDropFiles(wxDropFilesEvent& event)// Handels the files you drop
         wxWindowDisabler disabler;
         // wxBusyInfo busyInfo(_("Adding files, wait please..."));
 
-        wxString name;
+        std::string name;
         wxArrayString files;
 
         for (int i = 0; i < event.GetNumberOfFiles(); i++) {
-            name = dropped[i];
+            name = dropped[i].ToStdString();
             if (wxFileExists(name)) {
+                _audioSystem.addFile("sine440hz.wav");
                 files.push_back(name);
             }
             else if (wxDirExists(name)) {
@@ -139,3 +141,30 @@ void MyFrame::OnDropFiles(wxDropFilesEvent& event)// Handels the files you drop
     }
 }
 
+int main(int argc, char** argv) {
+    //TODO: Don't hardcode audio parameters.
+    constexpr int SAMPLE_RATE = 44100;
+    constexpr int CHANNELS = 2;
+    constexpr int CHUNK_SIZE = 2048;
+
+    //Init SDL2 systems
+    if (SDL_Init(SDL_INIT_AUDIO) < 0)
+    {
+        std::cerr << "Could not initialize SDL.\n";
+        return 1;
+    }
+    if (Mix_OpenAudio(SAMPLE_RATE, MIX_DEFAULT_FORMAT, CHANNELS, CHUNK_SIZE) < 0)
+    {
+        std::cerr << "SDL_mixer could not initialize!" <<
+            "SDL_mixer Error : " << Mix_GetError();
+        return 1;
+    }
+
+    //Run main window
+    wxEntry(argc, argv);
+    //Cleanup
+
+    Mix_Quit();
+    SDL_Quit();
+    return 0;
+}

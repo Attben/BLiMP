@@ -66,10 +66,10 @@ namespace blimp {
 	void AudioSystem::addFile(std::filesystem::path filePath)
 	{
 		if (filePath.extension() == ".wav") {
-			_soundFiles.emplace_back(new SoundEffect{ filePath.generic_string().c_str() });
+			_soundFiles.emplace_back(new SoundEffect{ filePath });
 		}
 		else {
-			_soundFiles.emplace_back(new MusicFile{ filePath.generic_string().c_str() });
+			_soundFiles.emplace_back(new MusicFile{ filePath });
 		}
 	}
 
