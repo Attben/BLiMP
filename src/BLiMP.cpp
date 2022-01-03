@@ -22,6 +22,8 @@ private:
     //Menu code stop
     void OpenFileHandeler(wxCommandEvent& event);
     void OnDropFiles(wxDropFilesEvent& event);
+	
+	blimp::AudioSystem _audioSystem;
 };
 enum
 {
@@ -79,6 +81,8 @@ MyFrame::MyFrame()
     pSizer->Add(fileBtn, 1, 0);
     SetSizer(pSizer);
     Bind(wxEVT_BUTTON, &MyFrame::OpenFileHandeler, this, wxID_FILE);
+	
+	_audioSystem.addFile("sine440hz.wav");
 }
 void MyFrame::OnExit(wxCommandEvent& event)
 {
@@ -91,7 +95,8 @@ void MyFrame::OnAbout(wxCommandEvent& event)
 }
 void MyFrame::OnHello(wxCommandEvent& event)
 {
-    wxLogMessage("Hello world from wxWidgets!");
+    wxLogMessage("Hello world from wxWidgets and SDL2_mixer!");
+	_audioSystem.playFile(0);
 }
 void MyFrame::OpenFileHandeler(wxCommandEvent& event)// Handles the btn
 {
