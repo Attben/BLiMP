@@ -58,9 +58,7 @@ MyFrame::MyFrame()
     wxMenuBar* menuBar = new wxMenuBar;
     menuBar->Append(menuFile, "&File");
     menuBar->Append(menuHelp, "&Help");
-    SetMenuBar(menuBar);
-    CreateStatusBar();
-    SetStatusText("Welcome to wxWidgets!");
+    SetMenuBar(menuBar);   
     Bind(wxEVT_MENU, &MyFrame::OnHello, this, ID_Hello);
     Bind(wxEVT_MENU, &MyFrame::OnAbout, this, wxID_ABOUT);
     Bind(wxEVT_MENU, &MyFrame::OnExit, this, wxID_EXIT);
@@ -70,13 +68,14 @@ MyFrame::MyFrame()
 
 
     //Drag and drop write out
-    wxBoxSizer* pSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* horosontalFileBox = new wxBoxSizer(wxHORIZONTAL);
     wxTextCtrl* dropTarget = new wxTextCtrl(this, wxID_ANY, _("Drop files onto me!"), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY);
     
     dropTarget->DragAcceptFiles(true);
-    pSizer->Add(dropTarget, 1, wxEXPAND, 0);
+    horosontalFileBox->Add(dropTarget, 1, wxEXPAND, 0);
 
-    SetSizer(pSizer);
+   
     Layout();
     Centre();
 
@@ -85,13 +84,12 @@ MyFrame::MyFrame()
 
     wxGridSizer* gs = new wxGridSizer(1, 4, 3, 3);
     wxButton* fileBtn = new wxButton(this, wxID_FILE, "OpenFileBtn", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
-    fileBtn->SetSize(5, 4);
-    pSizer->Add(fileBtn, 1, 2);
+    horosontalFileBox->Add(fileBtn);
    
+    pSizer->Add(horosontalFileBox, 1, wxEXPAND);
+    wxBoxSizer* horosontalBOX = new wxBoxSizer(wxHORIZONTAL);
 
-
-
-    gs = new wxGridSizer(1, 4, 3, 3);
+    gs = new wxFlexGridSizer(1, 4, 3, 3);
 
     wxWindowID previousBtnId = wxWindow::NewControlId();
     wxWindowID pauseBtnId = wxWindow::NewControlId();
@@ -102,7 +100,8 @@ MyFrame::MyFrame()
     gs->Add(new wxButton(this, nextBtnId, "Next", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next"));
     gs->Add(new wxButton(this, stopBtnId, "stop", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop"));
 
-    pSizer->Add(gs, 1, wxEXPAND);
+    horosontalBOX->Add(gs, 1, wxEXPAND);
+    pSizer->Add(horosontalBOX,1,wxEXPAND);
     SetSizer(pSizer);
     SetMinSize(wxSize(270, 220));
 
