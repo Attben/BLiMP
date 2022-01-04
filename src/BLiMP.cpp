@@ -125,11 +125,24 @@ void MyFrame::OnHello(wxCommandEvent& event)
 void MyFrame::OpenFileHandler(wxCommandEvent& event)// Handles the btn
 {
     
-    wxFileDialog
-        openFileDialog(this, _("Open XYZ file"), "", "",
-            "TXT files (*.txt)|*.txt", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    wxFileDialog openFileDialog{
+        this, //parent
+        _("Open sound file"), //Title
+        std::filesystem::current_path().c_str(), //Default directory
+        "", //Default file
+        "Sound files (*.wav;*.mp3;*.flac;*.ogg)|*.wav;*.mp3;*.flac;*.ogg",
+        wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE
+    };
+    if (openFileDialog.ShowModal() == wxID_CANCEL) {
+        return;
+    }
+    wxArrayString paths;
+    openFileDialog.GetPaths(paths);
+    for (wxString path : paths) {
+        _audioSystem.addFile(path.ToStdString());
+    }
 }
-void MyFrame::OnDropFiles(wxDropFilesEvent& event)// Handels the files you drop
+void MyFrame::OnDropFiles(wxDropFilesEvent& event)// Handles the files you drop
 {
     if (event.GetNumberOfFiles() > 0) {
 
@@ -144,7 +157,7 @@ void MyFrame::OnDropFiles(wxDropFilesEvent& event)// Handels the files you drop
         wxArrayString files;
 
         for (int i = 0; i < event.GetNumberOfFiles(); i++) {
-            name = dropped[i].ToStdString();
+            name = dropped[i];
             if (wxFileExists(name)) {
                 _audioSystem.addFile(name);
                 files.push_back(name);
@@ -152,7 +165,6 @@ void MyFrame::OnDropFiles(wxDropFilesEvent& event)// Handels the files you drop
             else if (wxDirExists(name)) {
                 //  wxDir::GetAllFiles(name, &files);
             }
-
         }
 
         wxTextCtrl* textCtrl = dynamic_cast<wxTextCtrl*>(event.GetEventObject());
