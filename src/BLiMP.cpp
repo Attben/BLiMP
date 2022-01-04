@@ -23,11 +23,14 @@ private:
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
     //Menu code stop
-    void OpenFileHandeler(wxCommandEvent& event);
+    //Event handlers
+    void OpenFileHandler(wxCommandEvent& event);
     void OnDropFiles(wxDropFilesEvent& event);
-    void OnPausClick(wxCommandEvent& event);
+    void OnPauseClick(wxCommandEvent& event);
     void OnNextClick(wxCommandEvent& event);
     void OnPreviousClick(wxCommandEvent& event);
+    void OnStopClick(wxCommandEvent& event);
+
 	blimp::AudioSystem _audioSystem;
 };
 enum
@@ -96,9 +99,9 @@ MyFrame::MyFrame()
     fileBtn->SetSize(100, 4);
     pSizer->Add(nextBtn, 1, 0);
     SetSizer(pSizer);
-    Bind(wxEVT_BUTTON, &MyFrame::OpenFileHandeler, this, wxID_FILE);
+    Bind(wxEVT_BUTTON, &MyFrame::OpenFileHandler, this, wxID_FILE);
     Bind(wxEVT_BUTTON, &MyFrame::OnPreviousClick, this, wxID_FILE1);
-    Bind(wxEVT_BUTTON, &MyFrame::OnPausClick, this, wxID_FILE2);
+    Bind(wxEVT_BUTTON, &MyFrame::OnPauseClick, this, wxID_FILE2);
     Bind(wxEVT_BUTTON, &MyFrame::OnNextClick, this, wxID_FILE3);
 }
 void MyFrame::OnExit(wxCommandEvent& event)
@@ -115,7 +118,7 @@ void MyFrame::OnHello(wxCommandEvent& event)
     wxLogMessage("Hello world from wxWidgets and SDL2_mixer!");
 	_audioSystem.playFile(0);
 }
-void MyFrame::OpenFileHandeler(wxCommandEvent& event)// Handles the btn
+void MyFrame::OpenFileHandler(wxCommandEvent& event)// Handles the btn
 {
     
     wxFileDialog
@@ -157,8 +160,9 @@ void MyFrame::OnDropFiles(wxDropFilesEvent& event)// Handels the files you drop
     }
 }
 
-void MyFrame::OnPausClick(wxCommandEvent& event)
+void MyFrame::OnPauseClick(wxCommandEvent& event)
 {
+    _audioSystem.pause();
 }
 
 void MyFrame::OnNextClick(wxCommandEvent& event)
@@ -167,6 +171,10 @@ void MyFrame::OnNextClick(wxCommandEvent& event)
 
 void MyFrame::OnPreviousClick(wxCommandEvent& event)
 {
+}
+
+void MyFrame::OnStopClick(wxCommandEvent& event) {
+    _audioSystem.stop();
 }
 
 int main(int argc, char** argv) {

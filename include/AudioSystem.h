@@ -48,7 +48,9 @@ namespace blimp {
 		AudioSystem() = default;
 
 		void addFile(std::filesystem::path filePath);
+		void pause();
 		void playFile(size_t index);
 		void removeFile(size_t index);
+		void stop();
 	};
 }

@@ -65,12 +65,17 @@ namespace blimp {
 	*/
 	void AudioSystem::addFile(std::filesystem::path filePath)
 	{
-		if (filePath.extension() == ".wav") {
+		/*if (filePath.extension() == ".wav") {
 			_soundFiles.emplace_back(new SoundEffect{ filePath });
 		}
 		else {
 			_soundFiles.emplace_back(new MusicFile{ filePath });
-		}
+		}*/
+		_soundFiles.emplace_back(new MusicFile{ filePath });
+	}
+
+	void AudioSystem::pause() {
+		Mix_PauseMusic();
 	}
 
 	void AudioSystem::playFile(size_t index)
@@ -81,5 +86,9 @@ namespace blimp {
 	void AudioSystem::removeFile(size_t index)
 	{
 		_soundFiles.erase(_soundFiles.begin() + index);
+	}
+
+	void AudioSystem::stop() {
+		Mix_HaltMusic();
 	}
 }
