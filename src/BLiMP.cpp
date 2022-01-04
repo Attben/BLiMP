@@ -70,7 +70,7 @@ MyFrame::MyFrame()
 
 
     //Drag and drop write out
-    wxBoxSizer* pSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
     wxTextCtrl* dropTarget = new wxTextCtrl(this, wxID_ANY, _("Drop files onto me!"), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY);
     
     dropTarget->DragAcceptFiles(true);
@@ -87,12 +87,11 @@ MyFrame::MyFrame()
     wxButton* fileBtn = new wxButton(this, wxID_FILE, "OpenFileBtn", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
     fileBtn->SetSize(5, 4);
     pSizer->Add(fileBtn, 1, 2);
-   
 
 
-
-    gs = new wxGridSizer(1, 4, 3, 3);
-
+    wxBoxSizer* BoxHorosontal = new wxBoxSizer(wxHORIZONTAL);
+    
+    gs = new wxFlexGridSizer(1, 4, 3, 3);
     wxWindowID previousBtnId = wxWindow::NewControlId();
     wxWindowID pauseBtnId = wxWindow::NewControlId();
     wxWindowID nextBtnId = wxWindow::NewControlId();
@@ -102,9 +101,10 @@ MyFrame::MyFrame()
     gs->Add(new wxButton(this, nextBtnId, "Next", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next"));
     gs->Add(new wxButton(this, stopBtnId, "stop", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop"));
 
-    pSizer->Add(gs, 1, wxEXPAND);
+    BoxHorosontal->Add(gs,1,wxEXPAND);
+    pSizer->Add(BoxHorosontal,1,wxEXPAND);
     SetSizer(pSizer);
-    SetMinSize(wxSize(270, 220));
+    SetMinSize(wxSize(300,300));
 
     Centre();
  
