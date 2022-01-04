@@ -108,9 +108,9 @@ MyFrame::MyFrame()
 
     Centre();
   
-    Bind(wxEVT_BUTTON, &MyFrame::OpenFileHandeler, this, wxID_FILE);
+    Bind(wxEVT_BUTTON, &MyFrame::OpenFileHandler, this, wxID_FILE);
     Bind(wxEVT_BUTTON, &MyFrame::OnPreviousClick, this, previousBtnId);
-    Bind(wxEVT_BUTTON, &MyFrame::OnPausClick, this, pauseBtnId);
+    Bind(wxEVT_BUTTON, &MyFrame::OnPauseClick, this, pauseBtnId);
     Bind(wxEVT_BUTTON, &MyFrame::OnNextClick, this, nextBtnId);
     Bind(wxEVT_BUTTON, &MyFrame::OnStopClick, this, stopBtnId);
 }
