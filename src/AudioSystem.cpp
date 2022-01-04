@@ -74,21 +74,45 @@ namespace blimp {
 		_soundFiles.emplace_back(new MusicFile{ filePath });
 	}
 
+	constexpr size_t AudioSystem::fileCount() const {
+		return _soundFiles.size();
+	}
+
 	void AudioSystem::pause() {
 		Mix_PauseMusic();
 	}
 
 	void AudioSystem::playFile(size_t index)
 	{
-		_soundFiles[index]->play();
+		if (index < fileCount()) {
+			_currentFile = index;
+			_soundFiles[index]->play();
+		}
 	}
 
 	void AudioSystem::removeFile(size_t index)
 	{
 		_soundFiles.erase(_soundFiles.begin() + index);
+		_currentFile = std::min(fileCount(), _currentFile);
+	}
+
+	void AudioSystem::resume() {
+		Mix_ResumeMusic();
 	}
 
 	void AudioSystem::stop() {
 		Mix_HaltMusic();
+	}
+
+	void AudioSystem::togglePlayback() {
+		if (Mix_PausedMusic()) {
+			resume();
+		}
+		else if (Mix_PlayingMusic()) {
+			pause();
+		}
+		else {
+			playFile(_currentFile);
+		}
 	}
 }

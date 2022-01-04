@@ -162,7 +162,7 @@ void MyFrame::OnDropFiles(wxDropFilesEvent& event)// Handels the files you drop
 
 void MyFrame::OnPauseClick(wxCommandEvent& event)
 {
-    _audioSystem.pause();
+    _audioSystem.togglePlayback();
 }
 
 void MyFrame::OnNextClick(wxCommandEvent& event)

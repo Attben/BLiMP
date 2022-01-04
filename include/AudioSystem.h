@@ -43,14 +43,18 @@ namespace blimp {
 
 	class AudioSystem {
 	private:
+		size_t _currentFile;
 		std::vector<std::unique_ptr<AudioFile>> _soundFiles;
 	public:
 		AudioSystem() = default;
 
 		void addFile(std::filesystem::path filePath);
+		constexpr size_t fileCount() const;
 		void pause();
 		void playFile(size_t index);
 		void removeFile(size_t index);
+		void resume();
 		void stop();
+		void togglePlayback();
 	};
 }
