@@ -7,6 +7,8 @@
 #include "../include/AudioSystem.h"
 #include <SDL.h>
 #include <SDL_mixer.h>
+#include "../Gridsizer.h"
+
 class MyApp : public wxApp
 {
 public:
@@ -45,7 +47,7 @@ bool MyApp::OnInit()
     return true;
 }
 MyFrame::MyFrame()
-    : wxFrame(NULL, wxID_ANY, "Hello World")
+    : wxFrame(NULL, wxID_ANY, "BLiMP")
 { //Menu code start
     wxMenu* menuFile = new wxMenu;       
     menuFile->Append(ID_Hello, "&Hello...\tCtrl-H",
@@ -57,9 +59,7 @@ MyFrame::MyFrame()
     wxMenuBar* menuBar = new wxMenuBar;
     menuBar->Append(menuFile, "&File");
     menuBar->Append(menuHelp, "&Help");
-    SetMenuBar(menuBar);
-    CreateStatusBar();
-    SetStatusText("Welcome to wxWidgets!");
+    SetMenuBar(menuBar);   
     Bind(wxEVT_MENU, &MyFrame::OnHello, this, ID_Hello);
     Bind(wxEVT_MENU, &MyFrame::OnAbout, this, wxID_ABOUT);
     Bind(wxEVT_MENU, &MyFrame::OnExit, this, wxID_EXIT);
@@ -70,42 +70,49 @@ MyFrame::MyFrame()
 
     //Drag and drop write out
     wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* horosontalFileBox = new wxBoxSizer(wxHORIZONTAL);
     wxTextCtrl* dropTarget = new wxTextCtrl(this, wxID_ANY, _("Drop files onto me!"), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY);
     
     dropTarget->DragAcceptFiles(true);
-    pSizer->Add(dropTarget, 1, wxEXPAND, 0);
+    horosontalFileBox->Add(dropTarget, 1, wxEXPAND, 0);
 
-    SetSizer(pSizer);
+   
     Layout();
     Centre();
 
     dropTarget->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(MyFrame::OnDropFiles), NULL, this);
     //Btn Testing start
 
-    wxButton* fileBtn = new wxButton(this, wxID_FILE, "OpenFileBtn", wxPoint(2, 8), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
-    fileBtn->SetSize(10, 4);
-    pSizer->Add(fileBtn, 1, 0);
-    SetSizer(pSizer);
+    wxGridSizer* gs = new wxGridSizer(1, 4, 3, 3);
+    wxButton* fileBtn = new wxButton(this, wxID_FILE, "OpenFileBtn", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
+    horosontalFileBox->Add(fileBtn);
+   
+    pSizer->Add(horosontalFileBox, 1, wxEXPAND);
+    wxBoxSizer* horosontalBOX = new wxBoxSizer(wxHORIZONTAL);
 
-   wxWindowID previousBtnId = wxWindow::NewControlId();
-   wxWindowID pauseBtnId = wxWindow::NewControlId();
-   wxWindowID nextBtnId = wxWindow::NewControlId();
-    wxButton* previousBtn = new wxButton(this, previousBtnId, "Previous", wxPoint(2, 9), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
-    fileBtn->SetSize(10, 4);
-    pSizer->Add(previousBtn, 1, 1);
+    gs = new wxFlexGridSizer(1, 4, 3, 3);
+
+    wxWindowID previousBtnId = wxWindow::NewControlId();
+    wxWindowID pauseBtnId = wxWindow::NewControlId();
+    wxWindowID nextBtnId = wxWindow::NewControlId();
+    wxWindowID stopBtnId = wxWindow::NewControlId();
+    gs->Add(new wxButton(this, previousBtnId, "Previous", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Previous"));
+    gs->Add(new wxButton(this, pauseBtnId, "Pause", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Pause"));
+    gs->Add(new wxButton(this, nextBtnId, "Next", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next"));
+    gs->Add(new wxButton(this, stopBtnId, "stop", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop"));
+
+    horosontalBOX->Add(gs, 1, wxEXPAND);
+    pSizer->Add(horosontalBOX,1,wxEXPAND);
     SetSizer(pSizer);
-    wxButton* pauseBtn = new wxButton(this, pauseBtnId, "Pause", wxPoint(2, 10), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
-    fileBtn->SetSize(10, 4);
-    pSizer->Add(pauseBtn, 1, 2);
-    SetSizer(pSizer);
-    wxButton* nextBtn = new wxButton(this, nextBtnId, "Next", wxPoint(2, 10), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
-    fileBtn->SetSize(10, 4);
-    pSizer->Add(nextBtn, 1, 3);
-    SetSizer(pSizer);
+    SetMinSize(wxSize(270, 220));
+
+    Centre();
+  
     Bind(wxEVT_BUTTON, &MyFrame::OpenFileHandler, this, wxID_FILE);
-    Bind(wxEVT_BUTTON, &MyFrame::OnPreviousClick, this, wxID_FILE1);
-    Bind(wxEVT_BUTTON, &MyFrame::OnPauseClick, this, wxID_FILE2);
-    Bind(wxEVT_BUTTON, &MyFrame::OnNextClick, this, wxID_FILE3);
+    Bind(wxEVT_BUTTON, &MyFrame::OnPreviousClick, this, previousBtnId);
+    Bind(wxEVT_BUTTON, &MyFrame::OnPauseClick, this, pauseBtnId);
+    Bind(wxEVT_BUTTON, &MyFrame::OnNextClick, this, nextBtnId);
+    Bind(wxEVT_BUTTON, &MyFrame::OnStopClick, this, stopBtnId);
 }
 void MyFrame::OnExit(wxCommandEvent& event)
 {

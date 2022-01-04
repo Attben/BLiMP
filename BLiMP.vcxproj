@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Gridsizer.h" />
     <ClInclude Include="include\AudioSystem.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
