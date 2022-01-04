@@ -25,12 +25,14 @@ private:
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
     //Menu code stop
-    void OpenFileHandeler(wxCommandEvent& event);
+    //Event handlers
+    void OpenFileHandler(wxCommandEvent& event);
     void OnDropFiles(wxDropFilesEvent& event);
-    void OnPausClick(wxCommandEvent& event);
+    void OnPauseClick(wxCommandEvent& event);
     void OnNextClick(wxCommandEvent& event);
     void OnPreviousClick(wxCommandEvent& event);
     void OnStopClick(wxCommandEvent& event);
+
 	blimp::AudioSystem _audioSystem;
 };
 enum
@@ -40,7 +42,6 @@ enum
 wxIMPLEMENT_APP_NO_MAIN (MyApp);
 bool MyApp::OnInit()
 {
-   
     MyFrame* frame = new MyFrame();
     frame->Show(true);
     return true;
@@ -127,7 +128,8 @@ void MyFrame::OnHello(wxCommandEvent& event)
     wxLogMessage("Hello world from wxWidgets and SDL2_mixer!");
 	_audioSystem.playFile(0);
 }
-void MyFrame::OpenFileHandeler(wxCommandEvent& event)// Handles the Filehandeler Btn 
+
+void MyFrame::OpenFileHandler(wxCommandEvent& event)// Handles the btn
 {
     
     wxFileDialog
@@ -169,8 +171,9 @@ void MyFrame::OnDropFiles(wxDropFilesEvent& event)// Handels the files you drop
     }
 }
 
-void MyFrame::OnPausClick(wxCommandEvent& event)
+void MyFrame::OnPauseClick(wxCommandEvent& event)
 {
+    _audioSystem.togglePlayback();
 }
 
 void MyFrame::OnNextClick(wxCommandEvent& event)
@@ -181,8 +184,8 @@ void MyFrame::OnPreviousClick(wxCommandEvent& event)
 {
 }
 
-void MyFrame::OnStopClick(wxCommandEvent& event)
-{
+void MyFrame::OnStopClick(wxCommandEvent& event) {
+    _audioSystem.stop();
 }
 
 int main(int argc, char** argv) {
