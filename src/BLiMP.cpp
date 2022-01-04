@@ -80,12 +80,26 @@ MyFrame::MyFrame()
     //Btn Testing start
 
     wxButton* fileBtn = new wxButton(this, wxID_FILE, "OpenFileBtn", wxPoint(2, 8), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
-    
-    // fileBtn->Create(this, wxID_FILE, "OpenFileBtn", wxPoint(2,8), wxDefaultSize,1L,wxDefaultValidator,"FileOpener");
     fileBtn->SetSize(100, 4);
     pSizer->Add(fileBtn, 1, 0);
     SetSizer(pSizer);
+
+    wxButton* previousBtn = new wxButton(this, wxID_FILE1, "Previous", wxPoint(2, 8), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
+    fileBtn->SetSize(100, 4);
+    pSizer->Add(previousBtn, 1, 0);
+    SetSizer(pSizer);
+    wxButton* pauseBtn = new wxButton(this, wxID_FILE2, "Pause", wxPoint(2, 8), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
+    fileBtn->SetSize(100, 4);
+    pSizer->Add(pauseBtn, 1, 0);
+    SetSizer(pSizer);
+    wxButton* nextBtn = new wxButton(this, wxID_FILE3, "Next", wxPoint(2, 8), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
+    fileBtn->SetSize(100, 4);
+    pSizer->Add(nextBtn, 1, 0);
+    SetSizer(pSizer);
     Bind(wxEVT_BUTTON, &MyFrame::OpenFileHandeler, this, wxID_FILE);
+    Bind(wxEVT_BUTTON, &MyFrame::OnPreviousClick, this, wxID_FILE1);
+    Bind(wxEVT_BUTTON, &MyFrame::OnPausClick, this, wxID_FILE2);
+    Bind(wxEVT_BUTTON, &MyFrame::OnNextClick, this, wxID_FILE3);
 }
 void MyFrame::OnExit(wxCommandEvent& event)
 {
