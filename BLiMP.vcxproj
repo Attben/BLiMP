@@ -145,10 +145,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Gridsizer.h" />
     <ClInclude Include="include\AudioSystem.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GridSizer.cpp" />
     <ClCompile Include="src\AudioSystem.cpp" />
     <ClCompile Include="src\BLiMP.cpp" />
   </ItemGroup>
