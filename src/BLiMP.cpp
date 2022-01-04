@@ -80,26 +80,29 @@ MyFrame::MyFrame()
     //Btn Testing start
 
     wxButton* fileBtn = new wxButton(this, wxID_FILE, "OpenFileBtn", wxPoint(2, 8), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
-    fileBtn->SetSize(100, 4);
+    fileBtn->SetSize(10, 4);
     pSizer->Add(fileBtn, 1, 0);
     SetSizer(pSizer);
 
-    wxButton* previousBtn = new wxButton(this, wxID_FILE1, "Previous", wxPoint(2, 8), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
-    fileBtn->SetSize(100, 4);
-    pSizer->Add(previousBtn, 1, 0);
+   wxWindowID previousBtnId = wxWindow::NewControlId();
+   wxWindowID pauseBtnId = wxWindow::NewControlId();
+   wxWindowID nextBtnId = wxWindow::NewControlId();
+    wxButton* previousBtn = new wxButton(this, previousBtnId, "Previous", wxPoint(2, 9), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
+    fileBtn->SetSize(10, 4);
+    pSizer->Add(previousBtn, 1, 1);
     SetSizer(pSizer);
-    wxButton* pauseBtn = new wxButton(this, wxID_FILE2, "Pause", wxPoint(2, 8), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
-    fileBtn->SetSize(100, 4);
-    pSizer->Add(pauseBtn, 1, 0);
+    wxButton* pauseBtn = new wxButton(this, pauseBtnId, "Pause", wxPoint(2, 10), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
+    fileBtn->SetSize(10, 4);
+    pSizer->Add(pauseBtn, 1, 2);
     SetSizer(pSizer);
-    wxButton* nextBtn = new wxButton(this, wxID_FILE3, "Next", wxPoint(2, 8), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
-    fileBtn->SetSize(100, 4);
-    pSizer->Add(nextBtn, 1, 0);
+    wxButton* nextBtn = new wxButton(this, nextBtnId, "Next", wxPoint(2, 10), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
+    fileBtn->SetSize(10, 4);
+    pSizer->Add(nextBtn, 1, 3);
     SetSizer(pSizer);
     Bind(wxEVT_BUTTON, &MyFrame::OpenFileHandeler, this, wxID_FILE);
-    Bind(wxEVT_BUTTON, &MyFrame::OnPreviousClick, this, wxID_FILE1);
-    Bind(wxEVT_BUTTON, &MyFrame::OnPausClick, this, wxID_FILE2);
-    Bind(wxEVT_BUTTON, &MyFrame::OnNextClick, this, wxID_FILE3);
+    Bind(wxEVT_BUTTON, &MyFrame::OnPreviousClick, this, previousBtnId);
+    Bind(wxEVT_BUTTON, &MyFrame::OnPausClick, this, pauseBtnId);
+    Bind(wxEVT_BUTTON, &MyFrame::OnNextClick, this, nextBtnId);
 }
 void MyFrame::OnExit(wxCommandEvent& event)
 {
@@ -115,7 +118,7 @@ void MyFrame::OnHello(wxCommandEvent& event)
     wxLogMessage("Hello world from wxWidgets and SDL2_mixer!");
 	_audioSystem.playFile(0);
 }
-void MyFrame::OpenFileHandeler(wxCommandEvent& event)// Handles the btn
+void MyFrame::OpenFileHandeler(wxCommandEvent& event)// Handles the Filehandeler Btn 
 {
     
     wxFileDialog
