@@ -5,16 +5,14 @@ namespace blimp {
 	/*
 	*MusicFile
 	*/
-	MusicFile::MusicFile(std::filesystem::path filePath)
-	{
+	MusicFile::MusicFile(std::filesystem::path filePath) {
 		_music = Mix_LoadMUS(filePath.generic_string().c_str());
 		if (_music == nullptr) {
 			std::cout << "Failed to load music. " << Mix_GetError();
 		}
 	}
 
-	MusicFile::~MusicFile()
-	{
+	MusicFile::~MusicFile() {
 		Mix_FreeMusic(_music);
 		_music = nullptr;
 	}
@@ -34,16 +32,14 @@ namespace blimp {
 	/*
 	*SoundEffect
 	*/
-	SoundEffect::SoundEffect(std::filesystem::path filePath)
-	{
+	SoundEffect::SoundEffect(std::filesystem::path filePath) {
 		_sound = Mix_LoadWAV(filePath.generic_string().c_str());
 		if (_sound == nullptr) {
 			std::cout << "Failed to load sound. " << Mix_GetError();
 		}
 	}
 
-	SoundEffect::~SoundEffect()
-	{
+	SoundEffect::~SoundEffect() {
 		Mix_FreeChunk(_sound);
 		_sound = nullptr;
 	}
@@ -63,8 +59,7 @@ namespace blimp {
 	/*
 	*AudioSystem
 	*/
-	void AudioSystem::addFile(std::filesystem::path filePath)
-	{
+	void AudioSystem::addFile(std::filesystem::path filePath) {
 		/*if (filePath.extension() == ".wav") {
 			_soundFiles.emplace_back(new SoundEffect{ filePath });
 		}
@@ -82,16 +77,14 @@ namespace blimp {
 		Mix_PauseMusic();
 	}
 
-	void AudioSystem::playFile(size_t index)
-	{
+	void AudioSystem::playFile(size_t index) {
 		if (index < fileCount()) {
 			_currentFile = index;
 			_soundFiles[index]->play();
 		}
 	}
 
-	void AudioSystem::removeFile(size_t index)
-	{
+	void AudioSystem::removeFile(size_t index) {
 		_soundFiles.erase(_soundFiles.begin() + index);
 		_currentFile = std::min(fileCount(), _currentFile);
 	}
