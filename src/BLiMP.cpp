@@ -107,7 +107,7 @@ MyFrame::MyFrame()
     SetMinSize(wxSize(270, 220));
 
     Centre();
- 
+  
     Bind(wxEVT_BUTTON, &MyFrame::OpenFileHandeler, this, wxID_FILE);
     Bind(wxEVT_BUTTON, &MyFrame::OnPreviousClick, this, previousBtnId);
     Bind(wxEVT_BUTTON, &MyFrame::OnPausClick, this, pauseBtnId);
