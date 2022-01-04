@@ -25,7 +25,9 @@ private:
     //Menu code stop
     void OpenFileHandeler(wxCommandEvent& event);
     void OnDropFiles(wxDropFilesEvent& event);
-	
+    void OnPausClick(wxCommandEvent& event);
+    void OnNextClick(wxCommandEvent& event);
+    void OnPreviousClick(wxCommandEvent& event);
 	blimp::AudioSystem _audioSystem;
 };
 enum
@@ -139,6 +141,18 @@ void MyFrame::OnDropFiles(wxDropFilesEvent& event)// Handels the files you drop
             *textCtrl << files[i] << wxT('\n');
         }
     }
+}
+
+void MyFrame::OnPausClick(wxCommandEvent& event)
+{
+}
+
+void MyFrame::OnNextClick(wxCommandEvent& event)
+{
+}
+
+void MyFrame::OnPreviousClick(wxCommandEvent& event)
+{
 }
 
 int main(int argc, char** argv) {
