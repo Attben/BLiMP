@@ -226,31 +226,32 @@ namespace blimp {
 		}
 	}
 
-	int main(int argc, char** argv) {
-		//TODO: Don't hardcode audio parameters.
-		constexpr int SAMPLE_RATE = 44100;
-		constexpr int CHANNELS = 2;
-		constexpr int CHUNK_SIZE = 2048;
+}
 
-		//Init SDL2 systems
-		if (SDL_Init(SDL_INIT_AUDIO) < 0)
-		{
-			std::cerr << "Could not initialize SDL.\n";
-			return 1;
-		}
-		if (Mix_OpenAudio(SAMPLE_RATE, MIX_DEFAULT_FORMAT, CHANNELS, CHUNK_SIZE) < 0)
-		{
-			std::cerr << "SDL_mixer could not initialize!" <<
-				"SDL_mixer Error : " << Mix_GetError();
-			return 1;
-		}
+int main(int argc, char** argv) {
+	//TODO: Don't hardcode audio parameters.
+	constexpr int SAMPLE_RATE = 44100;
+	constexpr int CHANNELS = 2;
+	constexpr int CHUNK_SIZE = 2048;
 
-		//Run main window
-		wxEntry(argc, argv);
-		//Cleanup
-
-		Mix_Quit();
-		SDL_Quit();
-		return 0;
+	//Init SDL2 systems
+	if (SDL_Init(SDL_INIT_AUDIO) < 0)
+	{
+		std::cerr << "Could not initialize SDL.\n";
+		return 1;
 	}
+	if (Mix_OpenAudio(SAMPLE_RATE, MIX_DEFAULT_FORMAT, CHANNELS, CHUNK_SIZE) < 0)
+	{
+		std::cerr << "SDL_mixer could not initialize!" <<
+			"SDL_mixer Error : " << Mix_GetError();
+		return 1;
+	}
+
+	//Run main window
+	wxEntry(argc, argv);
+	//Cleanup
+
+	Mix_Quit();
+	SDL_Quit();
+	return 0;
 }
