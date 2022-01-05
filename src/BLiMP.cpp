@@ -38,6 +38,7 @@ namespace blimp {
 
 	wxIMPLEMENT_APP_NO_MAIN(BlimpApp);
 	bool BlimpApp::OnInit() {
+		wxInitAllImageHandlers();
 		MainWindow* frame = new MainWindow();
 		frame->Show(true);
 		return true;
@@ -96,6 +97,11 @@ namespace blimp {
 		gs->Add(new wxButton(this, pauseBtnId, " Play  ", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Pause"));
 		gs->Add(new wxButton(this, nextBtnId, "Next", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next"));
 		gs->Add(new wxButton(this, stopBtnId, "stop", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop"));
+
+		wxBitmap rsswa;
+		rsswa.LoadFile("player_play.png",wxBITMAP_TYPE_PNG);
+		gs->Add(new wxBitmapButton(this, -1, rsswa, wxPoint(10, 10), wxSize(32, 32), 0));
+		horizontalBOX->Add(gs, 1, wxEXPAND);
 
 		horizontalBOX->Add(gs, 1, wxEXPAND);
 		pSizer->Add(horizontalBOX, 1, wxEXPAND);
