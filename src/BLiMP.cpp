@@ -87,7 +87,7 @@ namespace blimp {
 		pSizer->Add(horizontalFileBox, 1, wxEXPAND);
 		wxBoxSizer* horizontalBOX = new wxBoxSizer(wxHORIZONTAL);
 
-		gs = new wxFlexGridSizer(1, 4, 3, 3);
+		gs = new wxFlexGridSizer(1, 5, 3, 3);
 
 		wxWindowID previousBtnId = wxWindow::NewControlId();
 		wxWindowID pauseBtnId = wxWindow::NewControlId();
@@ -98,10 +98,10 @@ namespace blimp {
 		gs->Add(new wxButton(this, nextBtnId, "Next", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next"));
 		gs->Add(new wxButton(this, stopBtnId, "stop", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop"));
 
-		wxBitmap rsswa;
-		rsswa.LoadFile("player_play.png",wxBITMAP_TYPE_PNG);
+		/*wxBitmap rsswa;
+		rsswa.LoadFile("play-24.png",wxBITMAP_TYPE_PNG);
 		gs->Add(new wxBitmapButton(this, -1, rsswa, wxPoint(10, 10), wxSize(32, 32), 0));
-		horizontalBOX->Add(gs, 1, wxEXPAND);
+		horizontalBOX->Add(gs, 1, wxEXPAND);*/
 
 		horizontalBOX->Add(gs, 1, wxEXPAND);
 		pSizer->Add(horizontalBOX, 1, wxEXPAND);
