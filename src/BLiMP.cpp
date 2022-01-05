@@ -26,6 +26,7 @@ private:
     void OnAbout(wxCommandEvent& event);
     //Menu code stop
     //Event handlers
+    void OnKeyDown(wxKeyEvent& event);
     void OpenFileHandler(wxCommandEvent& event);
     void OnDropFiles(wxDropFilesEvent& event);
     void OnPauseClick(wxCommandEvent& event);
@@ -35,6 +36,7 @@ private:
 
 	blimp::AudioSystem _audioSystem;
 };
+
 enum
 {
     ID_Hello = 1
@@ -66,7 +68,7 @@ MyFrame::MyFrame()
    
     //Menu code stop
 
-
+    Bind(wxEVT_CHAR_HOOK, &MyFrame::OnKeyDown, this);
 
     //Drag and drop write out
     wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
@@ -127,6 +129,17 @@ void MyFrame::OnHello(wxCommandEvent& event)
 {
     wxLogMessage("Hello world from wxWidgets and SDL2_mixer!");
 	_audioSystem.playFile(0);
+}
+
+void MyFrame::OnKeyDown(wxKeyEvent& event) {
+    switch (event.GetUnicodeKey()) {
+    case WXK_SPACE:
+        _audioSystem.togglePlayback();
+        break;
+    default:
+        event.Skip();
+        break;
+    }
 }
 
 void MyFrame::OpenFileHandler(wxCommandEvent& event)// Handles the btn
