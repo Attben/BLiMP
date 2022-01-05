@@ -97,7 +97,7 @@ MyFrame::MyFrame()
     wxWindowID nextBtnId = wxWindow::NewControlId();
     wxWindowID stopBtnId = wxWindow::NewControlId();
     gs->Add(new wxButton(this, previousBtnId, "Previous", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Previous"));
-    gs->Add(new wxButton(this, pauseBtnId, "Pause", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Pause"));
+    gs->Add(new wxButton(this, pauseBtnId, " Play  ", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Pause"));
     gs->Add(new wxButton(this, nextBtnId, "Next", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next"));
     gs->Add(new wxButton(this, stopBtnId, "stop", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop"));
 
@@ -174,6 +174,18 @@ void MyFrame::OnDropFiles(wxDropFilesEvent& event)// Handels the files you drop
 void MyFrame::OnPauseClick(wxCommandEvent& event)
 {
     _audioSystem.togglePlayback();
+    wxWindowID dssa = event.GetId();
+    wxButton* button = wxDynamicCast(FindWindow(dssa), wxButton);
+    if (Mix_PausedMusic()) {
+        
+        if (button) button->SetLabel(wxT("Play"));
+    }
+    else if (Mix_PlayingMusic()) {
+        if (button) button->SetLabel(wxT("Pause"));
+    }
+    else {
+        if (button) button->SetLabel(wxT("Play"));
+    }
 }
 
 void MyFrame::OnNextClick(wxCommandEvent& event)
