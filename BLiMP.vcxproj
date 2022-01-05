@@ -153,6 +153,10 @@
     <ClCompile Include="src\AudioSystem.cpp" />
     <ClCompile Include="src\BLiMP.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="play-16.png" />
+    <Image Include="play-24.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
