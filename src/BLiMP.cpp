@@ -63,7 +63,7 @@ namespace blimp {
 
 		//Drag and drop handling
 		wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
-		wxBoxSizer* horosontalFileBox = new wxBoxSizer(wxHORIZONTAL);
+		wxBoxSizer* horizontalFileBox = new wxBoxSizer(wxHORIZONTAL);
 		wxTextCtrl* dropTarget = new wxTextCtrl(
 			this,
 			wxID_ANY,
@@ -73,7 +73,7 @@ namespace blimp {
 			wxTE_MULTILINE | wxTE_READONLY
 		);
 		dropTarget->DragAcceptFiles(true);
-		horosontalFileBox->Add(dropTarget, 1, wxEXPAND, 0);
+		horizontalFileBox->Add(dropTarget, 1, wxEXPAND, 0);
 		Layout();
 		Centre();
 		dropTarget->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(MainWindow::OnDropFiles), nullptr, this);
@@ -81,10 +81,10 @@ namespace blimp {
 		//Button layout
 		wxGridSizer* gs = new wxGridSizer(1, 4, 3, 3);
 		wxButton* fileBtn = new wxButton(this, wxID_FILE, "OpenFileBtn", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
-		horosontalFileBox->Add(fileBtn);
+		horizontalFileBox->Add(fileBtn);
 
-		pSizer->Add(horosontalFileBox, 1, wxEXPAND);
-		wxBoxSizer* horosontalBOX = new wxBoxSizer(wxHORIZONTAL);
+		pSizer->Add(horizontalFileBox, 1, wxEXPAND);
+		wxBoxSizer* horizontalBOX = new wxBoxSizer(wxHORIZONTAL);
 
 		gs = new wxFlexGridSizer(1, 4, 3, 3);
 
@@ -97,8 +97,8 @@ namespace blimp {
 		gs->Add(new wxButton(this, nextBtnId, "Next", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next"));
 		gs->Add(new wxButton(this, stopBtnId, "stop", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop"));
 
-		horosontalBOX->Add(gs, 1, wxEXPAND);
-		pSizer->Add(horosontalBOX, 1, wxEXPAND);
+		horizontalBOX->Add(gs, 1, wxEXPAND);
+		pSizer->Add(horizontalBOX, 1, wxEXPAND);
 		SetSizer(pSizer);
 		SetMinSize(wxSize(270, 220));
 
