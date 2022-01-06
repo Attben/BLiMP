@@ -98,10 +98,9 @@ namespace blimp {
 		gs->Add(new wxButton(this, nextBtnId, "Next", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next"));
 		gs->Add(new wxButton(this, stopBtnId, "stop", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop"));
 
-		/*wxBitmap rsswa;
+		wxBitmap rsswa;
 		rsswa.LoadFile("play-24.png",wxBITMAP_TYPE_PNG);
 		gs->Add(new wxBitmapButton(this, -1, rsswa, wxPoint(10, 10), wxSize(32, 32), 0));
-		horizontalBOX->Add(gs, 1, wxEXPAND);*/
 
 		horizontalBOX->Add(gs, 1, wxEXPAND);
 		pSizer->Add(horizontalBOX, 1, wxEXPAND);
