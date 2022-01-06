@@ -37,6 +37,9 @@ namespace blimp {
 		wxBitmap pauseIcon;
 		wxBitmap stopIcon;
 		wxBitmap playicon;
+		wxBitmap nextIcon;
+		wxBitmap rewindIcon;
+		wxBitmap openFileIcon;
 
 		wxWindowID previousBtnId = wxWindow::NewControlId();
 		wxWindowID pauseBtnId = wxWindow::NewControlId();
@@ -89,7 +92,8 @@ namespace blimp {
 
 		//Button layout
 		wxGridSizer* gs = new wxGridSizer(1, 4, 3, 3);
-		wxButton* fileBtn = new wxButton(this, wxID_FILE, "OpenFileBtn", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
+		openFileIcon.LoadFile("folder-open.png", wxBITMAP_TYPE_PNG);
+		wxBitmapButton* fileBtn = new wxBitmapButton(this, wxID_FILE, openFileIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
 		fileBtn->SetToolTip("Opens File Explorer to select a file");
 		horizontalFileBox->Add(fileBtn);
 
@@ -103,9 +107,11 @@ namespace blimp {
 		playicon.LoadFile("play-24.png",wxBITMAP_TYPE_PNG);
 		stopIcon.LoadFile("stop-24px.png", wxBITMAP_TYPE_PNG);
 		pauseIcon.LoadFile("pause-24px.png", wxBITMAP_TYPE_PNG);
-		wxButton* previousBtn = new wxButton(this, previousBtnId, "Previous", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Previous");
+		nextIcon.LoadFile("next-24px.png", wxBITMAP_TYPE_PNG);
+		rewindIcon.LoadFile("rewind-24px.png", wxBITMAP_TYPE_PNG);
+		wxBitmapButton* previousBtn = new wxBitmapButton(this, previousBtnId, rewindIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Previous");
 		wxBitmapButton* PauseBtn = new wxBitmapButton(this, pauseBtnId, playicon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Pause");
-		wxButton* nextBtn = new wxButton(this, nextBtnId, "Next", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next");
+		wxBitmapButton* nextBtn = new wxBitmapButton(this, nextBtnId,nextIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next");
 		wxBitmapButton* stopBtn = new wxBitmapButton(this, stopBtnId, stopIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop");
 
 		previousBtn->SetToolTip("Plays the previous file");

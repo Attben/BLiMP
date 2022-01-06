@@ -40,5 +40,14 @@
     <Image Include="stop-24px.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="next-24px.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="rewind-24px.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="folder-open.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
