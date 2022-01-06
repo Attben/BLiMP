@@ -32,6 +32,7 @@ namespace blimp {
 		void OnPreviousClick(wxCommandEvent& event);
 		void OnStopClick(wxCommandEvent& event);
 		void OpenFileBrowser(wxCommandEvent& event);
+		void OptionsClicked(wxCommandEvent& event);
 
 		AudioSystem _audioSystem;
 		wxBitmap pauseIcon;
@@ -41,10 +42,13 @@ namespace blimp {
 		wxBitmap rewindIcon;
 		wxBitmap openFileIcon;
 
+		wxWindowID settingsBtnId = wxWindow::NewControlId();
 		wxWindowID previousBtnId = wxWindow::NewControlId();
 		wxWindowID pauseBtnId = wxWindow::NewControlId();
 		wxWindowID nextBtnId = wxWindow::NewControlId();
 		wxWindowID stopBtnId = wxWindow::NewControlId();
+
+		wxCheckBox checkboxAutoplay;
 	};
 
 	wxIMPLEMENT_APP_NO_MAIN(BlimpApp);
@@ -59,7 +63,10 @@ namespace blimp {
 		: wxFrame(nullptr, wxID_ANY, "BLiMP") {
 		//Implement menu bar
 		wxMenu* menuFile = new wxMenu;
+		
+		
 		menuFile->AppendSeparator();
+		menuFile->Append(settingsBtnId,"Settings");
 		menuFile->Append(wxID_EXIT);
 		wxMenu* menuHelp = new wxMenu;
 		menuHelp->Append(wxID_ABOUT);
@@ -69,7 +76,7 @@ namespace blimp {
 		SetMenuBar(menuBar);
 		Bind(wxEVT_MENU, &MainWindow::OnAbout, this, wxID_ABOUT);
 		Bind(wxEVT_MENU, &MainWindow::OnExit, this, wxID_EXIT);
-
+		Bind(wxEVT_MENU, &MainWindow::OptionsClicked, this, settingsBtnId);
 		//Bind key event handler
 		Bind(wxEVT_CHAR_HOOK, &MainWindow::OnKeyDown, this);
 
@@ -82,8 +89,7 @@ namespace blimp {
 			_("Drop files onto me!"),
 			wxDefaultPosition,
 			wxDefaultSize,
-			wxTE_MULTILINE | wxTE_READONLY
-		);
+			wxTE_MULTILINE | wxTE_READONLY);
 		dropTarget->DragAcceptFiles(true);
 		horizontalFileBox->Add(dropTarget, 1, wxEXPAND, 0);
 		Layout();
@@ -258,8 +264,39 @@ namespace blimp {
 		}
 	}
 
-}
+	void MainWindow::OptionsClicked(wxCommandEvent& event)
+	{
+		Optionswindow* frame;
+		frame->Show(true);
+	}
+	
+	class Optionswindow :public wxFrame{
+	public:
+		Optionswindow();
 
+	private:
+		wxWindowID autoplayID = wxWindow::NewControlId();
+
+	};
+
+	Optionswindow::Optionswindow():wxFrame(nullptr, wxID_ANY, "Options")
+	{
+		wxCheckBox *autoplayCheckbox = new wxCheckBox(this,autoplayID,"Autoplay",wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "autoplayOption");
+
+		Show();
+	}
+
+	
+}
+void write()
+{
+	//NYI
+}
+bool read()
+{
+	//NYI
+	return true;
+}
 int main(int argc, char** argv) {
 	//TODO: Don't hardcode audio parameters.
 	constexpr int SAMPLE_RATE = 44100;
