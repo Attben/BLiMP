@@ -21,9 +21,6 @@
     <ClInclude Include="include\AudioSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Gridsizer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BLiMP.cpp">
@@ -34,10 +31,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="play-16.png">
+    <Image Include="play-24.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="play-24.png">
+    <Image Include="pause-24px.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="stop-24px.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

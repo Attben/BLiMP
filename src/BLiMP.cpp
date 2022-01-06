@@ -7,7 +7,7 @@
 #include "../include/AudioSystem.h"
 #include <SDL.h>
 #include <SDL_mixer.h>
-#include "../Gridsizer.h"
+
 
 namespace blimp {
 	class BlimpApp : public wxApp {
@@ -34,6 +34,14 @@ namespace blimp {
 		void OpenFileBrowser(wxCommandEvent& event);
 
 		AudioSystem _audioSystem;
+		wxBitmap pauseIcon;
+		wxBitmap stopIcon;
+		wxBitmap playicon;
+
+		wxWindowID previousBtnId = wxWindow::NewControlId();
+		wxWindowID pauseBtnId = wxWindow::NewControlId();
+		wxWindowID nextBtnId = wxWindow::NewControlId();
+		wxWindowID stopBtnId = wxWindow::NewControlId();
 	};
 
 	wxIMPLEMENT_APP_NO_MAIN(BlimpApp);
@@ -82,25 +90,37 @@ namespace blimp {
 		//Button layout
 		wxGridSizer* gs = new wxGridSizer(1, 4, 3, 3);
 		wxButton* fileBtn = new wxButton(this, wxID_FILE, "OpenFileBtn", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
+		fileBtn->SetToolTip("Opens File Explorer to select a file");
 		horizontalFileBox->Add(fileBtn);
 
 		pSizer->Add(horizontalFileBox, 1, wxEXPAND);
 		wxBoxSizer* horizontalBOX = new wxBoxSizer(wxHORIZONTAL);
 
-		gs = new wxFlexGridSizer(1, 5, 3, 3);
+		gs = new wxFlexGridSizer(1, 4, 3, 3);
 
-		wxWindowID previousBtnId = wxWindow::NewControlId();
-		wxWindowID pauseBtnId = wxWindow::NewControlId();
-		wxWindowID nextBtnId = wxWindow::NewControlId();
-		wxWindowID stopBtnId = wxWindow::NewControlId();
-		gs->Add(new wxButton(this, previousBtnId, "Previous", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Previous"));
-		gs->Add(new wxButton(this, pauseBtnId, " Play  ", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Pause"));
-		gs->Add(new wxButton(this, nextBtnId, "Next", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next"));
-		gs->Add(new wxButton(this, stopBtnId, "stop", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop"));
 
-		wxBitmap rsswa;
-		rsswa.LoadFile("play-24.png",wxBITMAP_TYPE_PNG);
-		gs->Add(new wxBitmapButton(this, -1, rsswa, wxPoint(10, 10), wxSize(32, 32), 0));
+		
+		playicon.LoadFile("play-24.png",wxBITMAP_TYPE_PNG);
+		stopIcon.LoadFile("stop-24px.png", wxBITMAP_TYPE_PNG);
+		pauseIcon.LoadFile("pause-24px.png", wxBITMAP_TYPE_PNG);
+		wxButton* previousBtn = new wxButton(this, previousBtnId, "Previous", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Previous");
+		wxBitmapButton* PauseBtn = new wxBitmapButton(this, pauseBtnId, playicon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Pause");
+		wxButton* nextBtn = new wxButton(this, nextBtnId, "Next", wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next");
+		wxBitmapButton* stopBtn = new wxBitmapButton(this, stopBtnId, stopIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop");
+
+		previousBtn->SetToolTip("Plays the previous file");
+		PauseBtn->SetToolTip("Click to toggle between play and pause");
+		nextBtn->SetToolTip("Plays the next file in the list");
+		stopBtn->SetToolTip("Stops and resets the file to the beginning");
+
+
+		gs->Add(previousBtn);
+		gs->Add(PauseBtn);
+		gs->Add(nextBtn);
+		gs->Add(stopBtn);
+		
+		
+		
 
 		horizontalBOX->Add(gs, 1, wxEXPAND);
 		pSizer->Add(horizontalBOX, 1, wxEXPAND);
@@ -189,17 +209,16 @@ namespace blimp {
 	void MainWindow::OnPauseClick(wxCommandEvent& event)
 	{
 		_audioSystem.togglePlayback();
-		wxWindowID dssa = event.GetId();
-		wxButton* button = wxDynamicCast(FindWindow(dssa), wxButton);
+		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
 		if (Mix_PausedMusic()) {
 
-			if (button) button->SetLabel(wxT("Play"));
+			 button->SetBitmapLabel(playicon);
 		}
 		else if (Mix_PlayingMusic()) {
-			if (button) button->SetLabel(wxT("Pause"));
+			 button->SetBitmapLabel(pauseIcon);
 		}
 		else {
-			if (button) button->SetLabel(wxT("Play"));
+			button->SetBitmapLabel(playicon);
 		}
 	}
 
@@ -210,6 +229,8 @@ namespace blimp {
 
 	void MainWindow::OnStopClick(wxCommandEvent& event) {
 		_audioSystem.stop();
+		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
+		button->SetBitmapLabel(playicon);
 	}
 
 	void MainWindow::OpenFileBrowser(wxCommandEvent& event) {
