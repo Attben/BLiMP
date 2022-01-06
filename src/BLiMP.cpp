@@ -50,7 +50,14 @@ namespace blimp {
 
 		wxCheckBox checkboxAutoplay;
 	};
+	class Optionswindow :public wxFrame {
+	public:
+		Optionswindow();
 
+	private:
+		wxWindowID autoplayID = wxWindow::NewControlId();
+
+	};
 	wxIMPLEMENT_APP_NO_MAIN(BlimpApp);
 	bool BlimpApp::OnInit() {
 		wxInitAllImageHandlers();
@@ -263,21 +270,11 @@ namespace blimp {
 			_audioSystem.addFile(path.ToStdString());
 		}
 	}
-
 	void MainWindow::OptionsClicked(wxCommandEvent& event)
 	{
-		Optionswindow* frame;
+		Optionswindow* frame = new Optionswindow();
 		frame->Show(true);
 	}
-	
-	class Optionswindow :public wxFrame{
-	public:
-		Optionswindow();
-
-	private:
-		wxWindowID autoplayID = wxWindow::NewControlId();
-
-	};
 
 	Optionswindow::Optionswindow():wxFrame(nullptr, wxID_ANY, "Options")
 	{
