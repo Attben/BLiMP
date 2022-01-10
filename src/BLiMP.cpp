@@ -50,32 +50,22 @@ namespace blimp {
 #else
 		_mediaPlayer = new wxMediaCtrl{ this, mediaControlID };
 #endif
-		_mediaPlayer->ShowPlayerControls();
 		Bind(wxEVT_MEDIA_FINISHED, &MainWindow::OnMediaFinished, this);
 		Bind(wxEVT_MEDIA_LOADED, &MainWindow::OnMediaLoaded, this);
+		Bind(wxEVT_MEDIA_PAUSE, &MainWindow::OnMediaPause, this);
+		Bind(wxEVT_MEDIA_PLAY, &MainWindow::OnMediaPlay, this);
+		Bind(wxEVT_MEDIA_STOP, &MainWindow::OnMediaStop, this);
 
 		//Drag and drop handling
+		_mediaPlayer->DragAcceptFiles(true);
+		_mediaPlayer->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(MainWindow::OnDropFiles), nullptr, this);
+
+		//Layout
 		wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
 		wxBoxSizer* horizontalFileBox = new wxBoxSizer(wxHORIZONTAL);
-		/*wxTextCtrl* dropTarget = new wxTextCtrl(
-			this,
-			wxID_ANY,
-			_("Drop files onto me!"),
-			wxDefaultPosition,
-			wxDefaultSize,
-			wxTE_MULTILINE | wxTE_READONLY
-		);
-		dropTarget->DragAcceptFiles(true);
-		horizontalFileBox->Add(dropTarget, 1, wxEXPAND, 0);
-		Layout();
-		Centre();
-		dropTarget->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(MainWindow::OnDropFiles), nullptr, this);*/
-		_mediaPanel->DragAcceptFiles(true);
-		horizontalFileBox->Add(_mediaPanel, 1, wxEXPAND, 0);
-		_mediaPanel->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(MainWindow::OnDropFiles), nullptr, this);
+		horizontalFileBox->Add(_mediaPlayer, 1, wxEXPAND, 0);
 
-		//Button layout
-		wxGridSizer* gs = new wxGridSizer(1, 4, 3, 3);
+		wxGridSizer* gs = new wxFlexGridSizer(1, 5, 3, 3);
 		openFileIcon.LoadFile("folder-open.png", wxBITMAP_TYPE_PNG);
 		wxBitmapButton* fileBtn = new wxBitmapButton(this, wxID_FILE, openFileIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
 		fileBtn->SetToolTip("Opens File Explorer to select a file");
@@ -83,8 +73,6 @@ namespace blimp {
 
 		pSizer->Add(horizontalFileBox, 1, wxEXPAND);
 		wxBoxSizer* horizontalBOX = new wxBoxSizer(wxHORIZONTAL);
-
-		gs = new wxFlexGridSizer(1, 5, 3, 3);
 
 		playicon.LoadFile("play-24.png", wxBITMAP_TYPE_PNG);
 		stopIcon.LoadFile("stop-24px.png", wxBITMAP_TYPE_PNG);
@@ -184,17 +172,6 @@ namespace blimp {
 		}
 	}
 
-	void MainWindow::OnMediaFinished(wxMediaEvent& event) {
-		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
-		button->SetBitmapLabel(playicon);
-	}
-
-	void MainWindow::OnMediaLoaded(wxMediaEvent& event) {
-		_mediaPlayer->Play();
-		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
-		button->SetBitmapLabel(pauseIcon);
-	}
-
 	/*
 	*Button click handlers
 	*/
@@ -252,18 +229,41 @@ namespace blimp {
 		_mediaPlayer->SetVolume(slider->GetValue() * 0.1);
 	}
 
+	/*
+	*Media event handlers
+	*/
+	void MainWindow::OnMediaFinished(wxMediaEvent& event) {
+		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
+		button->SetBitmapLabel(playicon);
+	}
+
+	void MainWindow::OnMediaLoaded(wxMediaEvent& event) {
+		_mediaPlayer->Play();
+	}
+
+	void MainWindow::OnMediaPause(wxMediaEvent& event) {
+		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
+		button->SetBitmapLabel(playicon);
+	}
+
+	void MainWindow::OnMediaPlay(wxMediaEvent& event) {
+		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
+		button->SetBitmapLabel(pauseIcon);
+	}
+
+	void MainWindow::OnMediaStop(wxMediaEvent& event) {
+		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
+		button->SetBitmapLabel(playicon);
+	}
 
 	void MainWindow::TogglePlayback() {
-		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
 		switch (_mediaPlayer->GetState()) {
 
 		case wxMEDIASTATE_PLAYING:
 			_mediaPlayer->Pause();
-			button->SetBitmapLabel(playicon);
 			break;
 		default:
 			_mediaPlayer->Play();
-			button->SetBitmapLabel(pauseIcon);
 			break;
 		}
 	}

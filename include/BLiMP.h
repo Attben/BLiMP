@@ -24,8 +24,6 @@ namespace blimp {
 		//Event handlers
 		void OnDropFiles(wxDropFilesEvent& event);
 		void OnKeyDown(wxKeyEvent& event);
-		void OnMediaFinished(wxMediaEvent& event);
-		void OnMediaLoaded(wxMediaEvent& event);
 		void OnNextClick(wxCommandEvent& event);
 		void OnPauseClick(wxCommandEvent& event);
 		void OnPreviousClick(wxCommandEvent& event);
@@ -33,6 +31,13 @@ namespace blimp {
 		void OnVolumeChanged(wxCommandEvent& event);
 		void OpenFileBrowser(wxCommandEvent& event);
 		void OptionsClicked(wxCommandEvent& event);
+
+		//Media events
+		void OnMediaFinished(wxMediaEvent& event);
+		void OnMediaLoaded(wxMediaEvent& event);
+		void OnMediaPause(wxMediaEvent& event);
+		void OnMediaPlay(wxMediaEvent& event);
+		void OnMediaStop(wxMediaEvent& event);
 
 		void TogglePlayback();
 
