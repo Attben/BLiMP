@@ -5,6 +5,7 @@
 #include <wx/wx.h>
 #endif
 #include "../include/AudioSystem.h"
+#include "../include/OptionsWindow.h"
 #include <SDL.h>
 #include <SDL_mixer.h>
 
@@ -50,14 +51,7 @@ namespace blimp {
 
 		wxCheckBox checkboxAutoplay;
 	};
-	class Optionswindow :public wxFrame {
-	public:
-		Optionswindow();
-
-	private:
-		wxWindowID autoplayID = wxWindow::NewControlId();
-
-	};
+	
 	wxIMPLEMENT_APP_NO_MAIN(BlimpApp);
 	bool BlimpApp::OnInit() {
 		wxInitAllImageHandlers();
@@ -275,25 +269,8 @@ namespace blimp {
 		Optionswindow* frame = new Optionswindow();
 		frame->Show(true);
 	}
-
-	Optionswindow::Optionswindow():wxFrame(nullptr, wxID_ANY, "Options")
-	{
-		wxCheckBox *autoplayCheckbox = new wxCheckBox(this,autoplayID,"Autoplay",wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "autoplayOption");
-
-		Show();
-	}
-
-	
 }
-void write()
-{
-	//NYI
-}
-bool read()
-{
-	//NYI
-	return true;
-}
+
 int main(int argc, char** argv) {
 	//TODO: Don't hardcode audio parameters.
 	constexpr int SAMPLE_RATE = 44100;
@@ -321,3 +298,5 @@ int main(int argc, char** argv) {
 	SDL_Quit();
 	return 0;
 }
+
+

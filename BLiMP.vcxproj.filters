@@ -21,12 +21,18 @@
     <ClInclude Include="include\AudioSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\OptionsWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BLiMP.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AudioSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OptionsWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
