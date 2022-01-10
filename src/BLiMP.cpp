@@ -45,9 +45,15 @@ namespace blimp {
 
 		//Init media player
 		_mediaPanel = new wxPanel{ this };
-		_mediaPlayer = new wxMediaCtrl{ _mediaPanel, mediaControlID };
+#ifdef _WIN32
+		//During testing on Windows, wxMediaEvent handling was a bit wonky when using default backend, so we explicitly define WMP10.
+		_mediaPlayer = new wxMediaCtrl{ this, mediaControlID, "", wxDefaultPosition, wxDefaultSize, 0, wxMEDIABACKEND_WMP10 };
+#else
+		_mediaPlayer = new wxMediaCtrl{ this, mediaControlID };
+#endif
 		_mediaPlayer->ShowPlayerControls();
-		Bind(wxEVT_MEDIA_LOADED, &MainWindow::OnMediaLoaded, this, mediaControlID);
+		Bind(wxEVT_MEDIA_FINISHED, &MainWindow::OnMediaFinished, this);
+		Bind(wxEVT_MEDIA_LOADED, &MainWindow::OnMediaLoaded, this);
 
 		//Drag and drop handling
 		wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
@@ -179,8 +185,15 @@ namespace blimp {
 		}
 	}
 
+	void MainWindow::OnMediaFinished(wxMediaEvent& event) {
+		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
+		button->SetBitmapLabel(playicon);
+	}
+
 	void MainWindow::OnMediaLoaded(wxMediaEvent& event) {
 		_mediaPlayer->Play();
+		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
+		button->SetBitmapLabel(pauseIcon);
 	}
 
 	/*

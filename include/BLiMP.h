@@ -6,6 +6,7 @@
 #include <wx/mediactrl.h>
 
 namespace blimp {
+
 	class BlimpApp : public wxApp {
 	public:
 		virtual bool OnInit();
@@ -23,6 +24,7 @@ namespace blimp {
 		//Event handlers
 		void OnDropFiles(wxDropFilesEvent& event);
 		void OnKeyDown(wxKeyEvent& event);
+		void OnMediaFinished(wxMediaEvent& event);
 		void OnMediaLoaded(wxMediaEvent& event);
 		void OnNextClick(wxCommandEvent& event);
 		void OnPauseClick(wxCommandEvent& event);
