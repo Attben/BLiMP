@@ -15,7 +15,6 @@
 
 namespace blimp {
 	wxIMPLEMENT_APP(BlimpApp);
-
 	bool BlimpApp::OnInit() {
 		wxInitAllImageHandlers();
 		MainWindow* frame = new MainWindow();
@@ -85,7 +84,7 @@ namespace blimp {
 		pSizer->Add(horizontalFileBox, 1, wxEXPAND);
 		wxBoxSizer* horizontalBOX = new wxBoxSizer(wxHORIZONTAL);
 
-		gs = new wxFlexGridSizer(1, 4, 3, 3);
+		gs = new wxFlexGridSizer(1, 5, 3, 3);
 
 		playicon.LoadFile("play-24.png", wxBITMAP_TYPE_PNG);
 		stopIcon.LoadFile("stop-24px.png", wxBITMAP_TYPE_PNG);
@@ -96,18 +95,17 @@ namespace blimp {
 		wxBitmapButton* PauseBtn = new wxBitmapButton(this, pauseBtnId, playicon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Pause");
 		wxBitmapButton* nextBtn = new wxBitmapButton(this, nextBtnId, nextIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next");
 		wxBitmapButton* stopBtn = new wxBitmapButton(this, stopBtnId, stopIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop");
-
+		wxSlider* volumeSlider = new wxSlider(this, volumeSliderId, 10, 0, 10, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "VolumeSlider");
 		previousBtn->SetToolTip("Plays the previous file");
 		PauseBtn->SetToolTip("Click to toggle between play and pause");
 		nextBtn->SetToolTip("Plays the next file in the list");
 		stopBtn->SetToolTip("Stops and resets the file to the beginning");
-
-
+		volumeSlider->SetToolTip("Changes the volume of the aplication. Left side is lowest volume, right side is loudest volume");
 		gs->Add(previousBtn);
 		gs->Add(PauseBtn);
 		gs->Add(nextBtn);
 		gs->Add(stopBtn);
-
+		gs->Add(volumeSlider);
 
 		horizontalBOX->Add(gs, 1, wxEXPAND);
 		pSizer->Add(horizontalBOX, 1, wxEXPAND);
@@ -121,6 +119,7 @@ namespace blimp {
 		Bind(wxEVT_BUTTON, &MainWindow::OnPauseClick, this, pauseBtnId);
 		Bind(wxEVT_BUTTON, &MainWindow::OnNextClick, this, nextBtnId);
 		Bind(wxEVT_BUTTON, &MainWindow::OnStopClick, this, stopBtnId);
+		Bind(wxEVT_SLIDER, &MainWindow::OnVolumeChanged, this, volumeSliderId);
 	}
 
 	/*
@@ -245,6 +244,13 @@ namespace blimp {
 		Optionswindow* frame = new Optionswindow();
 		frame->Show(true);
 	}
+  
+	void MainWindow::OnVolumeChanged(wxCommandEvent& event)
+	{
+		wxSlider* slider = wxDynamicCast(FindWindow(volumeSliderId), wxSlider);
+		slider->GetValue();
+	}
+}
 
 	void MainWindow::TogglePlayback() {
 		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
