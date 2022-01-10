@@ -43,7 +43,7 @@ namespace blimp {
 
 		wxBitmap pauseIcon;
 		wxBitmap stopIcon;
-		wxBitmap playicon;
+		wxBitmap playIcon;
 		wxBitmap nextIcon;
 		wxBitmap rewindIcon;
 		wxBitmap openFileIcon;
