@@ -244,12 +244,14 @@ namespace blimp {
 		Optionswindow* frame = new Optionswindow();
 		frame->Show(true);
 	}
-
+  
 	void MainWindow::OnVolumeChanged(wxCommandEvent& event)
 	{
 		wxSlider* slider = wxDynamicCast(FindWindow(volumeSliderId), wxSlider);
 		slider->GetValue();
+		_mediaPlayer->SetVolume(slider->GetValue() * 0.1);
 	}
+
 
 	void MainWindow::TogglePlayback() {
 		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
