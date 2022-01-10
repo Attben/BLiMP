@@ -30,6 +30,7 @@ namespace blimp {
 		void OnPauseClick(wxCommandEvent& event);
 		void OnPreviousClick(wxCommandEvent& event);
 		void OnStopClick(wxCommandEvent& event);
+		void OnVolumeChanged(wxCommandEvent& event);
 		void OpenFileBrowser(wxCommandEvent& event);
 		void OptionsClicked(wxCommandEvent& event);
 
@@ -51,6 +52,7 @@ namespace blimp {
 		wxWindowID previousBtnId = wxWindow::NewControlId();
 		wxWindowID settingsBtnId = wxWindow::NewControlId();
 		wxWindowID stopBtnId = wxWindow::NewControlId();
+		wxWindowID volumeSliderId = wxWindow::NewControlId();
 
 		wxCheckBox checkboxAutoplay;
 	};
