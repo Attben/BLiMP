@@ -145,13 +145,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\AudioSystem.h" />
     <ClInclude Include="include\BLiMP.h" />
     <ClInclude Include="include\OptionsWindow.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\AudioSystem.cpp" />
     <ClCompile Include="src\BLiMP.cpp" />
     <ClCompile Include="src\OptionsWindow.cpp" />
   </ItemGroup>
