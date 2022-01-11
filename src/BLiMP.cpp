@@ -62,6 +62,9 @@ namespace blimp {
 		pauseIcon.LoadFile("pause-24px.png", wxBITMAP_TYPE_PNG);
 		nextIcon.LoadFile("next-24px.png", wxBITMAP_TYPE_PNG);
 		rewindIcon.LoadFile("rewind-24px.png", wxBITMAP_TYPE_PNG);
+		muteIcon.LoadFile("mute-24px.png", wxBITMAP_TYPE_PNG);
+		soundIcon.LoadFile("sound-24px.png", wxBITMAP_TYPE_PNG);
+		
 
 		//Create UI elements
 		wxBitmapButton* fileButton = new wxBitmapButton(this, wxID_FILE, openFileIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
@@ -69,6 +72,7 @@ namespace blimp {
 		wxBitmapButton* playbackButton = new wxBitmapButton(this, pauseBtnId, playIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Pause");
 		wxBitmapButton* nextButton = new wxBitmapButton(this, nextBtnId, nextIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next");
 		wxBitmapButton* stopButton = new wxBitmapButton(this, stopBtnId, stopIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop");
+		wxBitmapButton* muteButton = new wxBitmapButton(this, muteButtonID, soundIcon);
 		wxSlider* volumeSlider = new wxSlider(this, volumeSliderId, 10, 0, 10, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "VolumeSlider");
 		previousButton->SetToolTip("Plays the previous file");
 		playbackButton->SetToolTip("Click to toggle between play and pause");
@@ -80,7 +84,7 @@ namespace blimp {
 		//Create sizer objects
 		wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
 		wxBoxSizer* horizontalFileBox = new wxBoxSizer(wxHORIZONTAL);
-		wxFlexGridSizer* gs = new wxFlexGridSizer(1, 5, 3, 3);
+		wxFlexGridSizer* gs = new wxFlexGridSizer(1, 0, 3, 3);
 		wxBoxSizer* playbackControlsBox = new wxBoxSizer(wxHORIZONTAL);
 
 		//Add UI elements to sizers
@@ -90,6 +94,8 @@ namespace blimp {
 		gs->Add(playbackButton);
 		gs->Add(nextButton);
 		gs->Add(stopButton);
+		gs->Add(3 * playIcon.GetWidth(), 0);
+		gs->Add(muteButton);
 		gs->Add(volumeSlider);
 
 		playbackControlsBox->Add(gs, 1, wxEXPAND);
@@ -109,6 +115,7 @@ namespace blimp {
 		Bind(wxEVT_BUTTON, &MainWindow::OnPauseClick, this, pauseBtnId);
 		Bind(wxEVT_BUTTON, &MainWindow::OnNextClick, this, nextBtnId);
 		Bind(wxEVT_BUTTON, &MainWindow::OnStopClick, this, stopBtnId);
+		Bind(wxEVT_BUTTON, &MainWindow::OnMuteClick, this, muteButtonID);
 		Bind(wxEVT_SLIDER, &MainWindow::OnVolumeChanged, this, volumeSliderId);
 
 		//Bind media events
@@ -232,12 +239,47 @@ namespace blimp {
 		Optionswindow* frame = new Optionswindow();
 		frame->Show(true);
 	}
+
+	void MainWindow::OnMuteClick(wxCommandEvent& event) {
+		wxButton* muteButton = wxDynamicCast(FindWindow(muteButtonID), wxButton);
+		wxSlider* slider = wxDynamicCast(FindWindow(volumeSliderId), wxSlider);
+		int sliderWidth = (slider->GetMax() - slider->GetMin());
+
+		if (_muted) {
+			_mediaPlayer->SetVolume(_volume); //Reload previous value
+			slider->SetValue(_volumePos);
+			muteButton->SetBitmapLabel(soundIcon);
+		}
+		else {
+			_volume = _mediaPlayer->GetVolume(); //Save previous value
+			_mediaPlayer->SetVolume(0.0);
+			muteButton->SetBitmapLabel(muteIcon);
+			_volumePos = slider->GetValue();
+			slider->SetValue(0);
+		}
+		_muted = !_muted;
+	}
   
 	void MainWindow::OnVolumeChanged(wxCommandEvent& event)
 	{
 		wxSlider* slider = wxDynamicCast(FindWindow(volumeSliderId), wxSlider);
-		slider->GetValue();
-		_mediaPlayer->SetVolume(slider->GetValue() * 0.1);
+		wxButton* muteButton = wxDynamicCast(FindWindow(muteButtonID), wxButton);
+		int volumePos = slider->GetValue();
+		double fractionOfMaxVolumePos = (double)volumePos / ((double)slider->GetMin() + slider->GetMax());
+		double desiredVolume = fractionOfMaxVolumePos * volumePos;
+		_mediaPlayer->SetVolume(desiredVolume);
+		wxMessageBox(std::to_string(desiredVolume));
+
+		if (volumePos > slider->GetMin()) {
+			_volume = desiredVolume; //Save these for later use with the mute mutton
+			_volumePos = volumePos;//
+			muteButton->SetBitmapLabel(soundIcon);
+			_muted = false;
+		}
+		else {
+			muteButton->SetBitmapLabel(muteIcon);
+			_muted = true;
+		}
 	}
 
 	/*
