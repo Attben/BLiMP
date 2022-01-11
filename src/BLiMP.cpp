@@ -80,8 +80,8 @@ namespace blimp {
 		//Create sizer objects
 		wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
 		wxBoxSizer* horizontalFileBox = new wxBoxSizer(wxHORIZONTAL);
-		wxGridSizer* gs = new wxFlexGridSizer(1, 5, 3, 3);
-		wxBoxSizer* horizontalBOX = new wxBoxSizer(wxHORIZONTAL);
+		wxFlexGridSizer* gs = new wxFlexGridSizer(1, 5, 3, 3);
+		wxBoxSizer* playbackControlsBox = new wxBoxSizer(wxHORIZONTAL);
 
 		//Add UI elements to sizers
 		horizontalFileBox->Add(_mediaPlayer, 1, wxEXPAND, 0);
@@ -92,9 +92,9 @@ namespace blimp {
 		gs->Add(stopButton);
 		gs->Add(volumeSlider);
 
-		horizontalBOX->Add(gs, 1, wxEXPAND);
+		playbackControlsBox->Add(gs, 1, wxEXPAND);
 		pSizer->Add(horizontalFileBox, 1, wxEXPAND);
-		pSizer->Add(horizontalBOX, 1, wxEXPAND);
+		pSizer->Add(playbackControlsBox, 0, wxEXPAND);
 		SetSizer(pSizer);
 		
 		wxSize displaySize = wxGetDisplaySize();
@@ -211,7 +211,9 @@ namespace blimp {
 			_("Open sound file"), //Title
 			std::filesystem::current_path().c_str(), //Default directory
 			"", //Default file
-			"Sound files (*.wav;*.mp3;*.flac;*.ogg)|*.wav;*.mp3;*.flac;*.ogg",
+			"Sound files (*.wav;*.flac;*.mid;*.mp3;*.ogg)|*.wav;*.flac;*.mid;*.mp3;*.ogg|\
+			Video files(*.mkv;*.mov;*.mp4;*.wmv)|*.mkv;*.mov;*.mp4;*.wmv|\
+			All files (*)|*",
 			wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE
 		};
 		if (openFileDialog.ShowModal() == wxID_CANCEL) {
@@ -248,6 +250,7 @@ namespace blimp {
 
 	void MainWindow::OnMediaLoaded(wxMediaEvent& event) {
 		_mediaPlayer->Play();
+		Layout();
 	}
 
 	void MainWindow::OnMediaPause(wxMediaEvent& event) {
@@ -277,31 +280,3 @@ namespace blimp {
 		}
 	}
 }
-
-//int main(int argc, char** argv) {
-//	//TODO: Don't hardcode audio parameters.
-//	constexpr int SAMPLE_RATE = 44100;
-//	constexpr int CHANNELS = 2;
-//	constexpr int CHUNK_SIZE = 2048;
-//
-//	//Init SDL2 systems
-//	if (SDL_Init(SDL_INIT_AUDIO) < 0)
-//	{
-//		std::cerr << "Could not initialize SDL.\n";
-//		return 1;
-//	}
-//	if (Mix_OpenAudio(SAMPLE_RATE, MIX_DEFAULT_FORMAT, CHANNELS, CHUNK_SIZE) < 0)
-//	{
-//		std::cerr << "SDL_mixer could not initialize!" <<
-//			"SDL_mixer Error : " << Mix_GetError();
-//		return 1;
-//	}
-//
-//	//Run main window
-//	wxEntry(argc, argv);
-//	//Cleanup
-//
-//	Mix_Quit();
-//	SDL_Quit();
-//	return 0;
-//}
