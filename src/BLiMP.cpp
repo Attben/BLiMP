@@ -264,12 +264,13 @@ namespace blimp {
 	{
 		wxSlider* slider = wxDynamicCast(FindWindow(volumeSliderId), wxSlider);
 		wxButton* muteButton = wxDynamicCast(FindWindow(muteButtonID), wxButton);
+		int sliderMin = slider->GetMin();
+		int sliderMax = slider->GetMax();
 		int volumePos = slider->GetValue();
-		double fractionOfMaxVolumePos = (double)volumePos / ((double)slider->GetMin() + slider->GetMax());
-		double desiredVolume = fractionOfMaxVolumePos * volumePos;
+		double desiredVolume = ((double)volumePos - sliderMin)/ ((double)sliderMax - sliderMin); //Fraction of max volume position
 		_mediaPlayer->SetVolume(desiredVolume);
 
-		if (volumePos > slider->GetMin()) {
+		if (volumePos > sliderMin) {
 			_volume = desiredVolume; //Save these for later use with the mute mutton
 			_volumePos = volumePos;//
 			muteButton->SetBitmapLabel(soundIcon);
