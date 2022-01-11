@@ -96,8 +96,11 @@ namespace blimp {
 		pSizer->Add(horizontalFileBox, 1, wxEXPAND);
 		pSizer->Add(horizontalBOX, 1, wxEXPAND);
 		SetSizer(pSizer);
+		
+		wxSize displaySize = wxGetDisplaySize();
+		
 		SetMinSize(wxSize(270, 220));
-
+		SetMaxSize(displaySize);
 		Centre();
 
 		//Bind button events
