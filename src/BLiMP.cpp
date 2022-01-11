@@ -74,6 +74,7 @@ namespace blimp {
 		wxBitmapButton* stopButton = new wxBitmapButton(this, stopBtnId, stopIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop");
 		wxBitmapButton* muteButton = new wxBitmapButton(this, muteButtonID, soundIcon);
 		wxSlider* volumeSlider = new wxSlider(this, volumeSliderId, 10, 0, 10, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "VolumeSlider");
+		wxSlider* timeSlider = new wxSlider(this, timeSliderId, 0, 0, 100, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "VolumeSlider");
 		previousButton->SetToolTip("Plays the previous file");
 		playbackButton->SetToolTip("Click to toggle between play and pause");
 		nextButton->SetToolTip("Plays the next file in the list");
@@ -84,10 +85,12 @@ namespace blimp {
 		//Create sizer objects
 		wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
 		wxBoxSizer* horizontalFileBox = new wxBoxSizer(wxHORIZONTAL);
+		wxBoxSizer* timeBox = new wxBoxSizer(wxHORIZONTAL);
 		wxFlexGridSizer* gs = new wxFlexGridSizer(1, 0, 3, 3);
 		wxBoxSizer* playbackControlsBox = new wxBoxSizer(wxHORIZONTAL);
 
 		//Add UI elements to sizers
+		timeBox->Add(timeSlider);
 		horizontalFileBox->Add(_mediaPlayer, 1, wxEXPAND, 0);
 		horizontalFileBox->Add(fileButton);
 		gs->Add(previousButton);
@@ -100,6 +103,7 @@ namespace blimp {
 
 		playbackControlsBox->Add(gs, 1, wxEXPAND);
 		pSizer->Add(horizontalFileBox, 1, wxEXPAND);
+		pSizer->Add(timeBox, 0, wxEXPAND);
 		pSizer->Add(playbackControlsBox, 0, wxEXPAND);
 		SetSizer(pSizer);
 		
@@ -117,6 +121,7 @@ namespace blimp {
 		Bind(wxEVT_BUTTON, &MainWindow::OnStopClick, this, stopBtnId);
 		Bind(wxEVT_BUTTON, &MainWindow::OnMuteClick, this, muteButtonID);
 		Bind(wxEVT_SLIDER, &MainWindow::OnVolumeChanged, this, volumeSliderId);
+		Bind(wxEVT_SLIDER, &MainWindow::OnTimeChanged, this, timeSliderId);
 
 		//Bind media events
 		Bind(wxEVT_MEDIA_FINISHED, &MainWindow::OnMediaFinished, this);
@@ -278,7 +283,18 @@ namespace blimp {
 		else {
 			muteButton->SetBitmapLabel(muteIcon);
 			_muted = true;
+
 		}
+	}
+
+	void MainWindow::OnTimeChanged(wxCommandEvent& event)
+	{
+		wxSlider* slider = wxDynamicCast(FindWindow(timeSliderId), wxSlider);
+		wxFileOffset mediaLength = _mediaPlayer->Length();
+		double incrementsOfTime = 100.0 / mediaLength;
+		int chosenTime = slider->GetValue();
+		double wantedTime = chosenTime * incrementsOfTime;
+		_mediaPlayer->Seek(wantedTime, wxFromStart);
 	}
 
 	/*
