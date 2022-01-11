@@ -52,5 +52,11 @@
     <Image Include="folder-open.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="mute-24px.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="sound-24px.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

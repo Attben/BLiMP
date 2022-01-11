@@ -155,10 +155,12 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="folder-open.png" />
+    <Image Include="mute-24px.png" />
     <Image Include="next-24px.png" />
     <Image Include="pause-24px.png" />
     <Image Include="play-24.png" />
     <Image Include="rewind-24px.png" />
+    <Image Include="sound-24px.png" />
     <Image Include="stop-24px.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

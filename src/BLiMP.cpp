@@ -62,6 +62,9 @@ namespace blimp {
 		pauseIcon.LoadFile("pause-24px.png", wxBITMAP_TYPE_PNG);
 		nextIcon.LoadFile("next-24px.png", wxBITMAP_TYPE_PNG);
 		rewindIcon.LoadFile("rewind-24px.png", wxBITMAP_TYPE_PNG);
+		muteIcon.LoadFile("mute-24px.png", wxBITMAP_TYPE_PNG);
+		soundIcon.LoadFile("sound-24px.png", wxBITMAP_TYPE_PNG);
+		
 
 		//Create UI elements
 		wxBitmapButton* fileButton = new wxBitmapButton(this, wxID_FILE, openFileIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
@@ -69,6 +72,7 @@ namespace blimp {
 		wxBitmapButton* playbackButton = new wxBitmapButton(this, pauseBtnId, playIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Pause");
 		wxBitmapButton* nextButton = new wxBitmapButton(this, nextBtnId, nextIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next");
 		wxBitmapButton* stopButton = new wxBitmapButton(this, stopBtnId, stopIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop");
+		wxBitmapButton* muteButton = new wxBitmapButton(this, muteButtonID, soundIcon);
 		wxSlider* volumeSlider = new wxSlider(this, volumeSliderId, 10, 0, 10, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "VolumeSlider");
 		previousButton->SetToolTip("Plays the previous file");
 		playbackButton->SetToolTip("Click to toggle between play and pause");
@@ -80,8 +84,8 @@ namespace blimp {
 		//Create sizer objects
 		wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
 		wxBoxSizer* horizontalFileBox = new wxBoxSizer(wxHORIZONTAL);
-		wxGridSizer* gs = new wxFlexGridSizer(1, 5, 3, 3);
-		wxBoxSizer* horizontalBOX = new wxBoxSizer(wxHORIZONTAL);
+		wxFlexGridSizer* gs = new wxFlexGridSizer(1, 0, 3, 3);
+		wxBoxSizer* playbackControlsBox = new wxBoxSizer(wxHORIZONTAL);
 
 		//Add UI elements to sizers
 		horizontalFileBox->Add(_mediaPlayer, 1, wxEXPAND, 0);
@@ -90,11 +94,13 @@ namespace blimp {
 		gs->Add(playbackButton);
 		gs->Add(nextButton);
 		gs->Add(stopButton);
+		gs->Add(3 * playIcon.GetWidth(), 0);
+		gs->Add(muteButton);
 		gs->Add(volumeSlider);
 
-		horizontalBOX->Add(gs, 1, wxEXPAND);
+		playbackControlsBox->Add(gs, 1, wxEXPAND);
 		pSizer->Add(horizontalFileBox, 1, wxEXPAND);
-		pSizer->Add(horizontalBOX, 1, wxEXPAND);
+		pSizer->Add(playbackControlsBox, 0, wxEXPAND);
 		SetSizer(pSizer);
 		
 		wxSize displaySize = wxGetDisplaySize();
@@ -109,6 +115,7 @@ namespace blimp {
 		Bind(wxEVT_BUTTON, &MainWindow::OnPauseClick, this, pauseBtnId);
 		Bind(wxEVT_BUTTON, &MainWindow::OnNextClick, this, nextBtnId);
 		Bind(wxEVT_BUTTON, &MainWindow::OnStopClick, this, stopBtnId);
+		Bind(wxEVT_BUTTON, &MainWindow::OnMuteClick, this, muteButtonID);
 		Bind(wxEVT_SLIDER, &MainWindow::OnVolumeChanged, this, volumeSliderId);
 
 		//Bind media events
@@ -211,7 +218,9 @@ namespace blimp {
 			_("Open sound file"), //Title
 			std::filesystem::current_path().c_str(), //Default directory
 			"", //Default file
-			"Sound files (*.wav;*.mp3;*.flac;*.ogg)|*.wav;*.mp3;*.flac;*.ogg",
+			"Sound files (*.wav;*.flac;*.mid;*.mp3;*.ogg)|*.wav;*.flac;*.mid;*.mp3;*.ogg|\
+			Video files(*.mkv;*.mov;*.mp4;*.wmv)|*.mkv;*.mov;*.mp4;*.wmv|\
+			All files (*)|*",
 			wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE
 		};
 		if (openFileDialog.ShowModal() == wxID_CANCEL) {
@@ -230,12 +239,47 @@ namespace blimp {
 		Optionswindow* frame = new Optionswindow();
 		frame->Show(true);
 	}
+
+	void MainWindow::OnMuteClick(wxCommandEvent& event) {
+		wxButton* muteButton = wxDynamicCast(FindWindow(muteButtonID), wxButton);
+		wxSlider* slider = wxDynamicCast(FindWindow(volumeSliderId), wxSlider);
+		int sliderWidth = (slider->GetMax() - slider->GetMin());
+
+		if (_muted) {
+			_mediaPlayer->SetVolume(_volume); //Reload previous value
+			slider->SetValue(_volumePos);
+			muteButton->SetBitmapLabel(soundIcon);
+		}
+		else {
+			_volume = _mediaPlayer->GetVolume(); //Save previous value
+			_mediaPlayer->SetVolume(0.0);
+			muteButton->SetBitmapLabel(muteIcon);
+			_volumePos = slider->GetValue();
+			slider->SetValue(0);
+		}
+		_muted = !_muted;
+	}
   
 	void MainWindow::OnVolumeChanged(wxCommandEvent& event)
 	{
 		wxSlider* slider = wxDynamicCast(FindWindow(volumeSliderId), wxSlider);
-		slider->GetValue();
-		_mediaPlayer->SetVolume(slider->GetValue() * 0.1);
+		wxButton* muteButton = wxDynamicCast(FindWindow(muteButtonID), wxButton);
+		int volumePos = slider->GetValue();
+		double fractionOfMaxVolumePos = (double)volumePos / ((double)slider->GetMin() + slider->GetMax());
+		double desiredVolume = fractionOfMaxVolumePos * volumePos;
+		_mediaPlayer->SetVolume(desiredVolume);
+		wxMessageBox(std::to_string(desiredVolume));
+
+		if (volumePos > slider->GetMin()) {
+			_volume = desiredVolume; //Save these for later use with the mute mutton
+			_volumePos = volumePos;//
+			muteButton->SetBitmapLabel(soundIcon);
+			_muted = false;
+		}
+		else {
+			muteButton->SetBitmapLabel(muteIcon);
+			_muted = true;
+		}
 	}
 
 	/*
@@ -248,6 +292,7 @@ namespace blimp {
 
 	void MainWindow::OnMediaLoaded(wxMediaEvent& event) {
 		_mediaPlayer->Play();
+		Layout();
 	}
 
 	void MainWindow::OnMediaPause(wxMediaEvent& event) {
@@ -277,31 +322,3 @@ namespace blimp {
 		}
 	}
 }
-
-//int main(int argc, char** argv) {
-//	//TODO: Don't hardcode audio parameters.
-//	constexpr int SAMPLE_RATE = 44100;
-//	constexpr int CHANNELS = 2;
-//	constexpr int CHUNK_SIZE = 2048;
-//
-//	//Init SDL2 systems
-//	if (SDL_Init(SDL_INIT_AUDIO) < 0)
-//	{
-//		std::cerr << "Could not initialize SDL.\n";
-//		return 1;
-//	}
-//	if (Mix_OpenAudio(SAMPLE_RATE, MIX_DEFAULT_FORMAT, CHANNELS, CHUNK_SIZE) < 0)
-//	{
-//		std::cerr << "SDL_mixer could not initialize!" <<
-//			"SDL_mixer Error : " << Mix_GetError();
-//		return 1;
-//	}
-//
-//	//Run main window
-//	wxEntry(argc, argv);
-//	//Cleanup
-//
-//	Mix_Quit();
-//	SDL_Quit();
-//	return 0;
-//}
