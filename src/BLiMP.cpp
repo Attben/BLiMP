@@ -268,7 +268,6 @@ namespace blimp {
 		double fractionOfMaxVolumePos = (double)volumePos / ((double)slider->GetMin() + slider->GetMax());
 		double desiredVolume = fractionOfMaxVolumePos * volumePos;
 		_mediaPlayer->SetVolume(desiredVolume);
-		wxMessageBox(std::to_string(desiredVolume));
 
 		if (volumePos > slider->GetMin()) {
 			_volume = desiredVolume; //Save these for later use with the mute mutton
