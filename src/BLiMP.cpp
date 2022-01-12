@@ -292,10 +292,11 @@ namespace blimp {
 	{
 		wxSlider* slider = wxDynamicCast(FindWindow(timeSliderId), wxSlider);
 		wxFileOffset mediaLength = _mediaPlayer->Length();
-		double incrementsOfTime = 100.0 / mediaLength;
-		int chosenTime = slider->GetValue();
-		double wantedTime = chosenTime * incrementsOfTime;
-		_mediaPlayer->Seek(wantedTime, wxFromStart);
+		wxFileOffset incrementsOfTime = (mediaLength / (slider->GetMax()- slider->GetMin()) );
+		wxFileOffset chosenTime = slider->GetValue();
+		wxFileOffset wantedTime = chosenTime * incrementsOfTime;
+		_mediaPlayer->Seek(wantedTime,wxFromStart);
+
 	}
 
 	/*
@@ -304,10 +305,13 @@ namespace blimp {
 	void MainWindow::OnMediaFinished(wxMediaEvent& event) {
 		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
 		button->SetBitmapLabel(playIcon);
+	
 	}
 
 	void MainWindow::OnMediaLoaded(wxMediaEvent& event) {
 		_mediaPlayer->Play();
+		wxSlider* slider = wxDynamicCast(FindWindow(timeSliderId), wxSlider);
+		slider->SetValue(0);
 		Layout();
 	}
 
