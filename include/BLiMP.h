@@ -30,6 +30,7 @@ namespace blimp {
 		void OnStopClick(wxCommandEvent& event);
 		void OnMuteClick(wxCommandEvent& event);
 		void OnVolumeChanged(wxCommandEvent& event);
+		void OnTimeChanged(wxCommandEvent& event);
 		void OpenFileBrowser(wxCommandEvent& event);
 		void OptionsClicked(wxCommandEvent& event);
 
@@ -65,6 +66,7 @@ namespace blimp {
 		wxWindowID stopBtnId = wxWindow::NewControlId();
 		wxWindowID muteButtonID = wxWindow::NewControlId();
 		wxWindowID volumeSliderId = wxWindow::NewControlId();
+		wxWindowID timeSliderId = wxWindow::NewControlId();
 
 		wxCheckBox checkboxAutoplay;
 	};
