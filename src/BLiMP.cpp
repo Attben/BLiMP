@@ -75,6 +75,8 @@ namespace blimp {
 		wxBitmapButton* muteButton = new wxBitmapButton(this, muteButtonID, soundIcon);
 		wxSlider* volumeSlider = new wxSlider(this, volumeSliderId, 10, 0, 10, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "VolumeSlider");
 		wxSlider* timeSlider = new wxSlider(this, timeSliderId, 0, 0, 100, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "VolumeSlider");
+		wxListCtrl* listOfFiles = new wxListCtrl(this,listBoxId,wxPoint(),wxDefaultSize, wxLC_ICON, wxDefaultValidator, "ddsa");
+
 		previousButton->SetToolTip("Plays the previous file");
 		playbackButton->SetToolTip("Click to toggle between play and pause");
 		nextButton->SetToolTip("Plays the next file in the list");
@@ -84,15 +86,18 @@ namespace blimp {
 
 		//Create sizer objects
 		wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
+		wxBoxSizer* verticalInsideHorizontalbox = new wxBoxSizer(wxVERTICAL);
 		wxBoxSizer* horizontalFileBox = new wxBoxSizer(wxHORIZONTAL);
 		wxBoxSizer* timeBox = new wxBoxSizer(wxHORIZONTAL);
 		wxFlexGridSizer* gs = new wxFlexGridSizer(1, 0, 3, 3);
 		wxBoxSizer* playbackControlsBox = new wxBoxSizer(wxHORIZONTAL);
 
 		//Add UI elements to sizers
+		verticalInsideHorizontalbox->Add(fileButton);
+		verticalInsideHorizontalbox->Add(listOfFiles);
 		timeBox->Add(timeSlider);
 		horizontalFileBox->Add(_mediaPlayer, 1, wxEXPAND, 0);
-		horizontalFileBox->Add(fileButton);
+		horizontalFileBox->Add(verticalInsideHorizontalbox,0,wxEXPAND);
 		gs->Add(previousButton);
 		gs->Add(playbackButton);
 		gs->Add(nextButton);
@@ -100,7 +105,6 @@ namespace blimp {
 		gs->Add(3 * playIcon.GetWidth(), 0);
 		gs->Add(muteButton);
 		gs->Add(volumeSlider);
-
 		playbackControlsBox->Add(gs, 1, wxEXPAND);
 		pSizer->Add(horizontalFileBox, 1, wxEXPAND);
 		pSizer->Add(timeBox, 0, wxEXPAND);
@@ -122,6 +126,7 @@ namespace blimp {
 		Bind(wxEVT_BUTTON, &MainWindow::OnMuteClick, this, muteButtonID);
 		Bind(wxEVT_SLIDER, &MainWindow::OnVolumeChanged, this, volumeSliderId);
 		Bind(wxEVT_SLIDER, &MainWindow::OnTimeChanged, this, timeSliderId);
+		Bind(wxEVT_SLIDER, &MainWindow::OnListBoxCicked, this, listBoxId);
 
 		//Bind media events
 		Bind(wxEVT_MEDIA_FINISHED, &MainWindow::OnMediaFinished, this);
@@ -243,6 +248,10 @@ namespace blimp {
 	{
 		Optionswindow* frame = new Optionswindow();
 		frame->Show(true);
+	}
+
+	void MainWindow::OnListBoxCicked(wxCommandEvent& event)
+	{
 	}
 
 	void MainWindow::OnMuteClick(wxCommandEvent& event) {
