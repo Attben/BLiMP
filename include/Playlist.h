@@ -9,6 +9,7 @@ namespace blimp {
 
 		void Append(const wxString& item);
 		wxString GetNextItem();
+		wxString GetPreviousItem();
 
 	private:
 		long _currentItem; //base class uses longs instead of size_t for indexing operations.
