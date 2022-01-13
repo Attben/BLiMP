@@ -44,6 +44,8 @@ namespace blimp {
 
 		void TogglePlayback();
 
+		
+
 		wxBitmap pauseIcon;
 		wxBitmap stopIcon;
 		wxBitmap playIcon;
@@ -59,6 +61,8 @@ namespace blimp {
 		int _volumePos;
 		double _volume = 1.0;
 
+		
+
 		wxWindowID mediaControlID = wxWindow::NewControlId();
 		wxWindowID nextBtnId = wxWindow::NewControlId();
 		wxWindowID pauseBtnId = wxWindow::NewControlId();
@@ -69,7 +73,11 @@ namespace blimp {
 		wxWindowID volumeSliderId = wxWindow::NewControlId();
 		wxWindowID timeSliderId = wxWindow::NewControlId();
 		wxWindowID listBoxId = wxWindow::NewControlId();
-
+		wxWindowID timerId = wxWindow::NewControlId();
 		wxCheckBox checkboxAutoplay;
+
+
+		void OnTimerUpdate(wxTimerEvent& event);
+		wxTimer* _timer;
 	};
 }

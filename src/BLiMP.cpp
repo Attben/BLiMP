@@ -50,7 +50,8 @@ namespace blimp {
 #else
 		_mediaPlayer = new wxMediaCtrl{ this, mediaControlID };
 #endif
-
+		
+		
 		//Drag and drop handling
 		_mediaPlayer->DragAcceptFiles(true);
 		_mediaPlayer->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(MainWindow::OnDropFiles), nullptr, this);
@@ -116,7 +117,7 @@ namespace blimp {
 		SetMinSize(wxSize(270, 220));
 		SetMaxSize(displaySize);
 		Centre();
-
+		_timer = new wxTimer(this, timerId);
 		//Bind button events
 		Bind(wxEVT_BUTTON, &MainWindow::OpenFileBrowser, this, wxID_FILE);
 		Bind(wxEVT_BUTTON, &MainWindow::OnPreviousClick, this, previousBtnId);
@@ -134,6 +135,9 @@ namespace blimp {
 		Bind(wxEVT_MEDIA_PAUSE, &MainWindow::OnMediaPause, this);
 		Bind(wxEVT_MEDIA_PLAY, &MainWindow::OnMediaPlay, this);
 		Bind(wxEVT_MEDIA_STOP, &MainWindow::OnMediaStop, this);
+
+		Bind(wxEVT_TIMER, &MainWindow::OnTimerUpdate, this,timerId);
+		
 	}
 
 	/*
@@ -214,6 +218,7 @@ namespace blimp {
 	void MainWindow::OnPreviousClick(wxCommandEvent& event)
 	{
 		//NYI
+		
 	}
 
 	void MainWindow::OnStopClick(wxCommandEvent& event) {
@@ -314,7 +319,7 @@ namespace blimp {
 	void MainWindow::OnMediaFinished(wxMediaEvent& event) {
 		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
 		button->SetBitmapLabel(playIcon);
-	
+		_timer->Stop();
 	}
 
 	void MainWindow::OnMediaLoaded(wxMediaEvent& event) {
@@ -322,11 +327,13 @@ namespace blimp {
 		wxSlider* slider = wxDynamicCast(FindWindow(timeSliderId), wxSlider);
 		slider->SetValue(0);
 		Layout();
+		_timer->Start(1000);
 	}
 
 	void MainWindow::OnMediaPause(wxMediaEvent& event) {
 		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
 		button->SetBitmapLabel(playIcon);
+		
 	}
 
 	void MainWindow::OnMediaPlay(wxMediaEvent& event) {
@@ -344,10 +351,22 @@ namespace blimp {
 
 		case wxMEDIASTATE_PLAYING:
 			_mediaPlayer->Pause();
+			_timer->Stop();
 			break;
 		default:
 			_mediaPlayer->Play();
+			_timer->Start(1000);
 			break;
 		}
+	}
+	void MainWindow::OnTimerUpdate(wxTimerEvent& event)
+	{
+		wxSlider* slider = wxDynamicCast(FindWindow(timeSliderId), wxSlider);
+		wxFileOffset mediaLength = _mediaPlayer->Length();
+		wxFileOffset currentPosition = _mediaPlayer->Tell();
+		wxFileOffset incrementsOfTime = (mediaLength / (slider->GetMax() - slider->GetMin()));
+		double slidervalue = (currentPosition/incrementsOfTime);
+		slider->SetValue(slidervalue);
+		
 	}
 }
