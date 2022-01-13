@@ -73,14 +73,20 @@ namespace blimp {
 		wxBitmapButton* nextButton = new wxBitmapButton(this, nextBtnId, nextIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next");
 		wxBitmapButton* stopButton = new wxBitmapButton(this, stopBtnId, stopIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop");
 		wxBitmapButton* muteButton = new wxBitmapButton(this, muteButtonID, soundIcon);
+
 		wxSlider* volumeSlider = new wxSlider(this, volumeSliderId, 10, 0, 10, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "VolumeSlider");
 		wxSlider* timeSlider = new wxSlider(this, timeSliderId, 0, 0, 100, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "VolumeSlider");
+
 		previousButton->SetToolTip("Plays the previous file");
 		playbackButton->SetToolTip("Click to toggle between play and pause");
 		nextButton->SetToolTip("Plays the next file in the list");
 		stopButton->SetToolTip("Stops and resets the file to the beginning");
 		volumeSlider->SetToolTip("Changes the volume of the aplication. Left side is lowest volume, right side is loudest volume");
 		fileButton->SetToolTip("Opens File Explorer to select a file");
+
+		_volumePos = volumeSlider->GetMax();
+
+		_playlist = new Playlist{this, wxID_ANY};
 
 		//Create sizer objects
 		wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
@@ -93,11 +99,12 @@ namespace blimp {
 		timeBox->Add(timeSlider);
 		horizontalFileBox->Add(_mediaPlayer, 1, wxEXPAND, 0);
 		horizontalFileBox->Add(fileButton);
+		horizontalFileBox->Add(_playlist);
 		gs->Add(previousButton);
 		gs->Add(playbackButton);
 		gs->Add(nextButton);
 		gs->Add(stopButton);
-		gs->Add(3 * playIcon.GetWidth(), 0);
+		gs->Add(3 * playIcon.GetWidth(), 0); //Add empty space
 		gs->Add(muteButton);
 		gs->Add(volumeSlider);
 
@@ -156,26 +163,20 @@ namespace blimp {
 			wxWindowDisabler disabler;
 			// wxBusyInfo busyInfo(_("Adding files, wait please..."));
 
-			std::string name;
-			wxArrayString files;
-
 			for (int i = 0; i < event.GetNumberOfFiles(); i++) {
-				name = dropped[i];
-				if (wxFileExists(name)) {
-					files.push_back(name);
+				wxString fileName = dropped[i];
+				if (wxFileExists(fileName)) {
+					_playlist->Append(fileName);
 				}
-				else if (wxDirExists(name)) {
+				else if (wxDirExists(fileName)) {
 					//  wxDir::GetAllFiles(name, &files);
 				}
 			}
-			_mediaPlayer->Load(files.back());
 
-			/*wxTextCtrl* textCtrl = dynamic_cast<wxTextCtrl*>(event.GetEventObject());
-			wxASSERT(textCtrl);
-			textCtrl->Clear();
-			for (size_t i = 0; i < files.size(); i++) {
-				*textCtrl << files[i] << wxT('\n');
-			}*/
+			const wxString nextItem = _playlist->GetNextItem();
+			if (nextItem != "") {
+				_mediaPlayer->Load(nextItem);
+			}
 		}
 	}
 

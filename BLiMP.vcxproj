@@ -147,11 +147,13 @@
   <ItemGroup>
     <ClInclude Include="include\BLiMP.h" />
     <ClInclude Include="include\OptionsWindow.h" />
+    <ClInclude Include="include\Playlist.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BLiMP.cpp" />
     <ClCompile Include="src\OptionsWindow.cpp" />
+    <ClCompile Include="src\Playlist.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="folder-open.png" />
