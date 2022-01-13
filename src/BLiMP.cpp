@@ -50,7 +50,8 @@ namespace blimp {
 #else
 		_mediaPlayer = new wxMediaCtrl{ this, mediaControlID };
 #endif
-
+		
+		
 		//Drag and drop handling
 		_mediaPlayer->DragAcceptFiles(true);
 		_mediaPlayer->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(MainWindow::OnDropFiles), nullptr, this);
@@ -90,16 +91,19 @@ namespace blimp {
 
 		//Create sizer objects
 		wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
+		wxBoxSizer* verticalInsideHorizontalbox = new wxBoxSizer(wxVERTICAL);
 		wxBoxSizer* horizontalFileBox = new wxBoxSizer(wxHORIZONTAL);
 		wxBoxSizer* timeBox = new wxBoxSizer(wxHORIZONTAL);
 		wxFlexGridSizer* gs = new wxFlexGridSizer(1, 0, 3, 3);
 		wxBoxSizer* playbackControlsBox = new wxBoxSizer(wxHORIZONTAL);
 
 		//Add UI elements to sizers
+		verticalInsideHorizontalbox->Add(fileButton);
+		verticalInsideHorizontalbox->Add(_playlist);
 		timeBox->Add(timeSlider);
 		horizontalFileBox->Add(_mediaPlayer, 1, wxEXPAND, 0);
-		horizontalFileBox->Add(fileButton);
-		horizontalFileBox->Add(_playlist);
+		horizontalFileBox->Add(verticalInsideHorizontalbox,0,wxEXPAND);
+      
 		gs->Add(previousButton);
 		gs->Add(playbackButton);
 		gs->Add(nextButton);
@@ -107,7 +111,6 @@ namespace blimp {
 		gs->Add(3 * playIcon.GetWidth(), 0); //Add empty space
 		gs->Add(muteButton);
 		gs->Add(volumeSlider);
-
 		playbackControlsBox->Add(gs, 1, wxEXPAND);
 		pSizer->Add(horizontalFileBox, 1, wxEXPAND);
 		pSizer->Add(timeBox, 0, wxEXPAND);
@@ -119,7 +122,7 @@ namespace blimp {
 		SetMinSize(wxSize(270, 220));
 		SetMaxSize(displaySize);
 		Centre();
-
+		_timer = new wxTimer(this, timerId);
 		//Bind button events
 		Bind(wxEVT_BUTTON, &MainWindow::OpenFileBrowser, this, wxID_FILE);
 		Bind(wxEVT_BUTTON, &MainWindow::OnPreviousClick, this, previousBtnId);
@@ -129,6 +132,7 @@ namespace blimp {
 		Bind(wxEVT_BUTTON, &MainWindow::OnMuteClick, this, muteButtonID);
 		Bind(wxEVT_SLIDER, &MainWindow::OnVolumeChanged, this, volumeSliderId);
 		Bind(wxEVT_SLIDER, &MainWindow::OnTimeChanged, this, timeSliderId);
+		Bind(wxEVT_SLIDER, &MainWindow::OnListBoxCicked, this, listBoxId);
 
 		//Bind media events
 		Bind(wxEVT_MEDIA_FINISHED, &MainWindow::OnMediaFinished, this);
@@ -136,6 +140,9 @@ namespace blimp {
 		Bind(wxEVT_MEDIA_PAUSE, &MainWindow::OnMediaPause, this);
 		Bind(wxEVT_MEDIA_PLAY, &MainWindow::OnMediaPlay, this);
 		Bind(wxEVT_MEDIA_STOP, &MainWindow::OnMediaStop, this);
+
+		Bind(wxEVT_TIMER, &MainWindow::OnTimerUpdate, this,timerId);
+		
 	}
 
 	/*
@@ -252,6 +259,10 @@ namespace blimp {
 		frame->Show(true);
 	}
 
+	void MainWindow::OnListBoxCicked(wxCommandEvent& event)
+	{
+	}
+
 	void MainWindow::OnMuteClick(wxCommandEvent& event) {
 		wxButton* muteButton = wxDynamicCast(FindWindow(muteButtonID), wxButton);
 		wxSlider* slider = wxDynamicCast(FindWindow(volumeSliderId), wxSlider);
@@ -314,6 +325,7 @@ namespace blimp {
 		if (nextFile == "") { //Did we reach the end of the playlist?
 			wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
 			button->SetBitmapLabel(playIcon);
+      _timer->Stop();
 		}
 		else {
 			_mediaPlayer->Load(nextFile);
@@ -325,11 +337,13 @@ namespace blimp {
 		wxSlider* slider = wxDynamicCast(FindWindow(timeSliderId), wxSlider);
 		slider->SetValue(0);
 		Layout();
+		_timer->Start(1000);
 	}
 
 	void MainWindow::OnMediaPause(wxMediaEvent& event) {
 		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
 		button->SetBitmapLabel(playIcon);
+		
 	}
 
 	void MainWindow::OnMediaPlay(wxMediaEvent& event) {
@@ -347,10 +361,22 @@ namespace blimp {
 
 		case wxMEDIASTATE_PLAYING:
 			_mediaPlayer->Pause();
+			_timer->Stop();
 			break;
 		default:
 			_mediaPlayer->Play();
+			_timer->Start(1000);
 			break;
 		}
+	}
+	void MainWindow::OnTimerUpdate(wxTimerEvent& event)
+	{
+		wxSlider* slider = wxDynamicCast(FindWindow(timeSliderId), wxSlider);
+		wxFileOffset mediaLength = _mediaPlayer->Length();
+		wxFileOffset currentPosition = _mediaPlayer->Tell();
+		wxFileOffset incrementsOfTime = (mediaLength / (slider->GetMax() - slider->GetMin()));
+		double slidervalue = (currentPosition/incrementsOfTime);
+		slider->SetValue(slidervalue);
+		
 	}
 }
