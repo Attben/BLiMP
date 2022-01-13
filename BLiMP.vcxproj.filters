@@ -24,12 +24,18 @@
     <ClInclude Include="include\BLiMP.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Playlist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BLiMP.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\OptionsWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Playlist.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

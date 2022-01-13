@@ -74,9 +74,9 @@ namespace blimp {
 		wxBitmapButton* nextButton = new wxBitmapButton(this, nextBtnId, nextIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "Next");
 		wxBitmapButton* stopButton = new wxBitmapButton(this, stopBtnId, stopIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "stop");
 		wxBitmapButton* muteButton = new wxBitmapButton(this, muteButtonID, soundIcon);
+
 		wxSlider* volumeSlider = new wxSlider(this, volumeSliderId, 10, 0, 10, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "VolumeSlider");
 		wxSlider* timeSlider = new wxSlider(this, timeSliderId, 0, 0, 100, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "VolumeSlider");
-		wxListCtrl* listOfFiles = new wxListCtrl(this,listBoxId,wxPoint(),wxDefaultSize, wxLC_ICON, wxDefaultValidator, "ddsa");
 
 		previousButton->SetToolTip("Plays the previous file");
 		playbackButton->SetToolTip("Click to toggle between play and pause");
@@ -84,6 +84,10 @@ namespace blimp {
 		stopButton->SetToolTip("Stops and resets the file to the beginning");
 		volumeSlider->SetToolTip("Changes the volume of the aplication. Left side is lowest volume, right side is loudest volume");
 		fileButton->SetToolTip("Opens File Explorer to select a file");
+
+		_volumePos = volumeSlider->GetMax();
+
+		_playlist = new Playlist{this, wxID_ANY};
 
 		//Create sizer objects
 		wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
@@ -95,15 +99,16 @@ namespace blimp {
 
 		//Add UI elements to sizers
 		verticalInsideHorizontalbox->Add(fileButton);
-		verticalInsideHorizontalbox->Add(listOfFiles);
+		verticalInsideHorizontalbox->Add(_playlist);
 		timeBox->Add(timeSlider);
 		horizontalFileBox->Add(_mediaPlayer, 1, wxEXPAND, 0);
 		horizontalFileBox->Add(verticalInsideHorizontalbox,0,wxEXPAND);
+      
 		gs->Add(previousButton);
 		gs->Add(playbackButton);
 		gs->Add(nextButton);
 		gs->Add(stopButton);
-		gs->Add(3 * playIcon.GetWidth(), 0);
+		gs->Add(3 * playIcon.GetWidth(), 0); //Add empty space
 		gs->Add(muteButton);
 		gs->Add(volumeSlider);
 		playbackControlsBox->Add(gs, 1, wxEXPAND);
@@ -165,26 +170,20 @@ namespace blimp {
 			wxWindowDisabler disabler;
 			// wxBusyInfo busyInfo(_("Adding files, wait please..."));
 
-			std::string name;
-			wxArrayString files;
-
 			for (int i = 0; i < event.GetNumberOfFiles(); i++) {
-				name = dropped[i];
-				if (wxFileExists(name)) {
-					files.push_back(name);
+				wxString fileName = dropped[i];
+				if (wxFileExists(fileName)) {
+					_playlist->Append(fileName);
 				}
-				else if (wxDirExists(name)) {
+				else if (wxDirExists(fileName)) {
 					//  wxDir::GetAllFiles(name, &files);
 				}
 			}
-			_mediaPlayer->Load(files.back());
 
-			/*wxTextCtrl* textCtrl = dynamic_cast<wxTextCtrl*>(event.GetEventObject());
-			wxASSERT(textCtrl);
-			textCtrl->Clear();
-			for (size_t i = 0; i < files.size(); i++) {
-				*textCtrl << files[i] << wxT('\n');
-			}*/
+			const wxString nextItem = _playlist->GetNextItem();
+			if (nextItem != "") {
+				_mediaPlayer->Load(nextItem);
+			}
 		}
 	}
 
@@ -207,7 +206,10 @@ namespace blimp {
 	*/
 	void MainWindow::OnNextClick(wxCommandEvent& event)
 	{
-		//NYI
+		wxString filePath = _playlist->GetNextItem();
+		if (filePath != "") {
+			_mediaPlayer->Load(filePath);
+		}
 	}
 
 	void MainWindow::OnPauseClick(wxCommandEvent& event)
@@ -217,8 +219,10 @@ namespace blimp {
 
 	void MainWindow::OnPreviousClick(wxCommandEvent& event)
 	{
-		//NYI
-		
+		wxString filePath = _playlist->GetPreviousItem();
+		if (filePath != "") {
+			_mediaPlayer->Load(filePath);
+		}
 	}
 
 	void MainWindow::OnStopClick(wxCommandEvent& event) {
@@ -244,9 +248,9 @@ namespace blimp {
 		wxArrayString paths;
 		openFileDialog.GetPaths(paths);
 		for (wxString path : paths) {
-			//add to playlist
+			_playlist->Append(path);
 		}
-		_mediaPlayer->Load(paths.back());
+		_mediaPlayer->Load(_playlist->GetNextItem());
 	}
 
 	void MainWindow::OptionsClicked(wxCommandEvent& event)
@@ -317,9 +321,15 @@ namespace blimp {
 	*Media event handlers
 	*/
 	void MainWindow::OnMediaFinished(wxMediaEvent& event) {
-		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
-		button->SetBitmapLabel(playIcon);
-		_timer->Stop();
+		wxString nextFile = _playlist->GetNextItem();
+		if (nextFile == "") { //Did we reach the end of the playlist?
+			wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
+			button->SetBitmapLabel(playIcon);
+      _timer->Stop();
+		}
+		else {
+			_mediaPlayer->Load(nextFile);
+		}
 	}
 
 	void MainWindow::OnMediaLoaded(wxMediaEvent& event) {

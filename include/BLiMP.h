@@ -3,6 +3,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include "../include/Playlist.h"
 #include <wx/mediactrl.h>
 
 namespace blimp {
@@ -57,6 +58,7 @@ namespace blimp {
 
 		wxMediaCtrl* _mediaPlayer;
 		wxPanel* _mediaPanel;
+		blimp::Playlist* _playlist;
 		bool _muted = false;
 		int _volumePos;
 		double _volume = 1.0;
