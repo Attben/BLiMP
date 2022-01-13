@@ -199,7 +199,10 @@ namespace blimp {
 	*/
 	void MainWindow::OnNextClick(wxCommandEvent& event)
 	{
-		//NYI
+		wxString filePath = _playlist->GetNextItem();
+		if (filePath != "") {
+			_mediaPlayer->Load(filePath);
+		}
 	}
 
 	void MainWindow::OnPauseClick(wxCommandEvent& event)
@@ -209,7 +212,10 @@ namespace blimp {
 
 	void MainWindow::OnPreviousClick(wxCommandEvent& event)
 	{
-		//NYI
+		wxString filePath = _playlist->GetPreviousItem();
+		if (filePath != "") {
+			_mediaPlayer->Load(filePath);
+		}
 	}
 
 	void MainWindow::OnStopClick(wxCommandEvent& event) {
@@ -235,9 +241,9 @@ namespace blimp {
 		wxArrayString paths;
 		openFileDialog.GetPaths(paths);
 		for (wxString path : paths) {
-			//add to playlist
+			_playlist->Append(path);
 		}
-		_mediaPlayer->Load(paths.back());
+		_mediaPlayer->Load(_playlist->GetNextItem());
 	}
 
 	void MainWindow::OptionsClicked(wxCommandEvent& event)
@@ -304,9 +310,14 @@ namespace blimp {
 	*Media event handlers
 	*/
 	void MainWindow::OnMediaFinished(wxMediaEvent& event) {
-		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
-		button->SetBitmapLabel(playIcon);
-	
+		wxString nextFile = _playlist->GetNextItem();
+		if (nextFile == "") { //Did we reach the end of the playlist?
+			wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
+			button->SetBitmapLabel(playIcon);
+		}
+		else {
+			_mediaPlayer->Load(nextFile);
+		}
 	}
 
 	void MainWindow::OnMediaLoaded(wxMediaEvent& event) {

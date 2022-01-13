@@ -4,7 +4,7 @@
 namespace blimp {
 	Playlist::Playlist(wxWindow* parent, wxWindowID id)
 		: wxListCtrl{ parent, id, wxDefaultPosition,  wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL},
-		_currentItem{0L}
+		_currentItem{-1L}
 	{
 		AppendColumn(_("File"), wxLIST_FORMAT_LEFT, /*wxLIST_AUTOSIZE_USEHEADER*/305);
 		AppendColumn(_("Length"), wxLIST_FORMAT_CENTER, 75);
@@ -23,8 +23,8 @@ namespace blimp {
 	}
 
 	wxString Playlist::GetNextItem() {
-		if (_currentItem < GetItemCount()) {
-			return *(wxString*)GetItemData(_currentItem++);
+		if (_currentItem < GetItemCount() - 1) {
+			return *(wxString*)GetItemData(++_currentItem);
 		}
 		else {
 			return "";
@@ -33,7 +33,7 @@ namespace blimp {
 
 	wxString Playlist::GetPreviousItem() {
 		if (_currentItem > 0L) {
-			return *(wxString*)GetItemData(_currentItem--);
+			return *(wxString*)GetItemData(--_currentItem);
 		}
 		else {
 			return "";
