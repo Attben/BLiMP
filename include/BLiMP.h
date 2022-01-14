@@ -35,7 +35,7 @@ namespace blimp {
 		void OnTimeChanged(wxCommandEvent& event);
 		void OpenFileBrowser(wxCommandEvent& event);
 		void OptionsClicked(wxCommandEvent& event);
-		void OnListBoxCicked(wxCommandEvent& event);
+		void OnPlaylistDoubleclick(wxCommandEvent& event);
 
 		//Media events
 		void OnMediaFinished(wxMediaEvent& event);
@@ -45,8 +45,6 @@ namespace blimp {
 		void OnMediaStop(wxMediaEvent& event);
 
 		void TogglePlayback();
-
-		
 
 		wxBitmap pauseIcon;
 		wxBitmap stopIcon;
@@ -64,8 +62,6 @@ namespace blimp {
 		int _volumePos;
 		double _volume = 1.0;
 
-		
-
 		wxWindowID mediaControlID = wxWindow::NewControlId();
 		wxWindowID nextBtnId = wxWindow::NewControlId();
 		wxWindowID pauseBtnId = wxWindow::NewControlId();
@@ -78,7 +74,6 @@ namespace blimp {
 		wxWindowID listBoxId = wxWindow::NewControlId();
 		wxWindowID timerId = wxWindow::NewControlId();
 		wxCheckBox checkboxAutoplay;
-
 
 		void OnTimerUpdate(wxTimerEvent& event);
 		wxTimer* _timer;

@@ -50,8 +50,8 @@ namespace blimp {
 #else
 		_mediaPlayer = new wxMediaCtrl{ this, mediaControlID };
 #endif
-		
-		
+
+
 		//Drag and drop handling
 		_mediaPlayer->DragAcceptFiles(true);
 		_mediaPlayer->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(MainWindow::OnDropFiles), nullptr, this);
@@ -65,7 +65,7 @@ namespace blimp {
 		rewindIcon.LoadFile("rewind-24px.png", wxBITMAP_TYPE_PNG);
 		muteIcon.LoadFile("mute-24px.png", wxBITMAP_TYPE_PNG);
 		soundIcon.LoadFile("sound-24px.png", wxBITMAP_TYPE_PNG);
-		
+
 
 		//Create UI elements
 		wxBitmapButton* fileButton = new wxBitmapButton(this, wxID_FILE, openFileIcon, wxPoint(), wxDefaultSize, 1L, wxDefaultValidator, "FileOpener");
@@ -87,7 +87,7 @@ namespace blimp {
 
 		_volumePos = volumeSlider->GetMax();
 
-		_playlist = new Playlist{this, wxID_ANY};
+		_playlist = new Playlist{ this, wxID_ANY };
 
 		//Create sizer objects
 		wxBoxSizer* pSizer = new wxBoxSizer(wxVERTICAL);
@@ -98,14 +98,14 @@ namespace blimp {
 		wxBoxSizer* playbackControlsBox = new wxBoxSizer(wxHORIZONTAL);
 
 		//Add UI elements to sizers
-		_playlist->SetColumnWidth(0,100);
+		_playlist->SetColumnWidth(0, 200);
 		_playlist->SetForegroundColour(BACKGROUND_GREEN);
 		verticalInsideHorizontalbox->Add(fileButton);
 		verticalInsideHorizontalbox->Add(_playlist);
 		timeBox->Add(timeSlider);
 		horizontalFileBox->Add(_mediaPlayer, 1, wxEXPAND, 0);
-		horizontalFileBox->Add(verticalInsideHorizontalbox,0,wxEXPAND);
-      
+		horizontalFileBox->Add(verticalInsideHorizontalbox, 0, wxEXPAND);
+
 		gs->Add(previousButton);
 		gs->Add(playbackButton);
 		gs->Add(nextButton);
@@ -118,9 +118,9 @@ namespace blimp {
 		pSizer->Add(timeBox, 0, wxEXPAND);
 		pSizer->Add(playbackControlsBox, 0, wxEXPAND);
 		SetSizer(pSizer);
-		
+
 		wxSize displaySize = wxGetDisplaySize();
-		
+
 		SetMinSize(wxSize(270, 220));
 		SetMaxSize(displaySize);
 		Centre();
@@ -134,7 +134,7 @@ namespace blimp {
 		Bind(wxEVT_BUTTON, &MainWindow::OnMuteClick, this, muteButtonID);
 		Bind(wxEVT_SLIDER, &MainWindow::OnVolumeChanged, this, volumeSliderId);
 		Bind(wxEVT_SLIDER, &MainWindow::OnTimeChanged, this, timeSliderId);
-		Bind(wxEVT_SLIDER, &MainWindow::OnListBoxCicked, this, listBoxId);
+		Bind(wxEVT_SLIDER, &MainWindow::OnPlaylistDoubleclick, this, listBoxId);
 
 		//Bind media events
 		Bind(wxEVT_MEDIA_FINISHED, &MainWindow::OnMediaFinished, this);
@@ -143,7 +143,8 @@ namespace blimp {
 		Bind(wxEVT_MEDIA_PLAY, &MainWindow::OnMediaPlay, this);
 		Bind(wxEVT_MEDIA_STOP, &MainWindow::OnMediaStop, this);
 
-		Bind(wxEVT_TIMER, &MainWindow::OnTimerUpdate, this,timerId);
+		Bind(wxEVT_TIMER, &MainWindow::OnTimerUpdate, this, timerId);
+		Bind(wxEVT_LIST_ITEM_ACTIVATED, &MainWindow::OnPlaylistDoubleclick, this);
 	}
 
 	MainWindow::~MainWindow() {
@@ -264,8 +265,16 @@ namespace blimp {
 		frame->Show(true);
 	}
 
-	void MainWindow::OnListBoxCicked(wxCommandEvent& event)
+	void MainWindow::OnPlaylistDoubleclick(wxCommandEvent& event)
 	{
+		//The compiler doesn't seem to want to Bind() wxEVT_LIST_ITEM_ACTIVATED
+		//to a function that takes an actual wxListEvent& as its argument, so
+		//this ugly (and probably really sketchy) typecast is used as a workaround.
+		auto listEvent = dynamic_cast<wxListEvent*>(&event);
+		wxString path = _playlist->GetItemAt(listEvent->m_itemIndex);
+		if (path != "") {
+			_mediaPlayer->Load(path);
+		}
 	}
 
 	void MainWindow::OnMuteClick(wxCommandEvent& event) {
@@ -287,7 +296,7 @@ namespace blimp {
 		}
 		_muted = !_muted;
 	}
-  
+
 	void MainWindow::OnVolumeChanged(wxCommandEvent& event)
 	{
 		wxSlider* slider = wxDynamicCast(FindWindow(volumeSliderId), wxSlider);
@@ -295,7 +304,7 @@ namespace blimp {
 		int sliderMin = slider->GetMin();
 		int sliderMax = slider->GetMax();
 		int volumePos = slider->GetValue();
-		double desiredVolume = ((double)volumePos - sliderMin)/ ((double)sliderMax - sliderMin); //Fraction of max volume position
+		double desiredVolume = ((double)volumePos - sliderMin) / ((double)sliderMax - sliderMin); //Fraction of max volume position
 		_mediaPlayer->SetVolume(desiredVolume);
 
 		if (volumePos > sliderMin) {
@@ -315,10 +324,10 @@ namespace blimp {
 	{
 		wxSlider* slider = wxDynamicCast(FindWindow(timeSliderId), wxSlider);
 		wxFileOffset mediaLength = _mediaPlayer->Length();
-		wxFileOffset incrementsOfTime = (mediaLength / (slider->GetMax()- slider->GetMin()) );
+		wxFileOffset incrementsOfTime = (mediaLength / (slider->GetMax() - slider->GetMin()));
 		wxFileOffset chosenTime = slider->GetValue();
 		wxFileOffset wantedTime = chosenTime * incrementsOfTime;
-		_mediaPlayer->Seek(wantedTime,wxFromStart);
+		_mediaPlayer->Seek(wantedTime, wxFromStart);
 
 	}
 
@@ -330,7 +339,7 @@ namespace blimp {
 		if (nextFile == "") { //Did we reach the end of the playlist?
 			wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
 			button->SetBitmapLabel(playIcon);
-      _timer->Stop();
+			_timer->Stop();
 		}
 		else {
 			_mediaPlayer->Load(nextFile);
@@ -348,7 +357,7 @@ namespace blimp {
 	void MainWindow::OnMediaPause(wxMediaEvent& event) {
 		wxButton* button = wxDynamicCast(FindWindow(pauseBtnId), wxButton);
 		button->SetBitmapLabel(playIcon);
-		
+
 	}
 
 	void MainWindow::OnMediaPlay(wxMediaEvent& event) {
@@ -380,8 +389,8 @@ namespace blimp {
 		wxFileOffset mediaLength = _mediaPlayer->Length();
 		wxFileOffset currentPosition = _mediaPlayer->Tell();
 		double incrementsOfTime = (mediaLength / (slider->GetMax() - slider->GetMin()));
-		double slidervalue = (currentPosition/incrementsOfTime);
+		double slidervalue = (currentPosition / incrementsOfTime);
 		slider->SetValue(slidervalue);
-		
+
 	}
 }

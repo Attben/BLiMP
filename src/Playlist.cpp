@@ -3,11 +3,11 @@
 
 namespace blimp {
 	Playlist::Playlist(wxWindow* parent, wxWindowID id)
-		: wxListCtrl{ parent, id, wxDefaultPosition,  wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL},
-		_currentItem{-1L}
+		: wxListCtrl{ parent, id, wxDefaultPosition,  wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL },
+		_currentItem{ -1L }
 	{
 		AppendColumn(_("File"), wxLIST_FORMAT_LEFT, /*wxLIST_AUTOSIZE_USEHEADER*/305);
-		AppendColumn(_("Length"), wxLIST_FORMAT_CENTER, 75);
+		//AppendColumn(_("Length"), wxLIST_FORMAT_CENTER, 75);
 	}
 
 	void Playlist::Append(const wxString& path) {
@@ -20,6 +20,16 @@ namespace blimp {
 		InsertItem(item);
 
 		this->SetItem(ID, 0, wxFileName(path).GetFullName());
+	}
+
+	wxString Playlist::GetItemAt(long index) {
+		if (index < 0L || index >= GetItemCount()) {
+			return "";
+		}
+		else {
+			_currentItem = index;
+			return *(wxString*)GetItemData(_currentItem);
+		}
 	}
 
 	wxString Playlist::GetNextItem() {

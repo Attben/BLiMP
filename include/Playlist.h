@@ -8,6 +8,7 @@ namespace blimp {
 		Playlist(wxWindow* parent, wxWindowID id);
 
 		void Append(const wxString& item);
+		wxString GetItemAt(long index);
 		wxString GetNextItem();
 		wxString GetPreviousItem();
 
