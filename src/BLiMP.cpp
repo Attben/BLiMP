@@ -144,7 +144,10 @@ namespace blimp {
 		Bind(wxEVT_MEDIA_STOP, &MainWindow::OnMediaStop, this);
 
 		Bind(wxEVT_TIMER, &MainWindow::OnTimerUpdate, this,timerId);
-		
+	}
+
+	MainWindow::~MainWindow() {
+		delete _timer;
 	}
 
 	/*

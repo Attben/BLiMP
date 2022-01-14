@@ -16,6 +16,7 @@ namespace blimp {
 	class MainWindow : public wxFrame {
 	public:
 		MainWindow();
+		~MainWindow();
 
 	private:
 		//Menu item handlers
