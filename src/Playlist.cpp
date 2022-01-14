@@ -7,7 +7,7 @@ namespace blimp {
 		_currentItem{ -1L }
 	{
 		AppendColumn(_("File"), wxLIST_FORMAT_LEFT, /*wxLIST_AUTOSIZE_USEHEADER*/305);
-		AppendColumn(_("Length"), wxLIST_FORMAT_CENTER, 75);
+		//AppendColumn(_("Length"), wxLIST_FORMAT_CENTER, 75);
 	}
 
 	void Playlist::Append(const wxString& path) {

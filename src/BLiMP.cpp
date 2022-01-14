@@ -98,7 +98,7 @@ namespace blimp {
 		wxBoxSizer* playbackControlsBox = new wxBoxSizer(wxHORIZONTAL);
 
 		//Add UI elements to sizers
-		_playlist->SetColumnWidth(0, 100);
+		_playlist->SetColumnWidth(0, 200);
 		_playlist->SetForegroundColour(BACKGROUND_GREEN);
 		verticalInsideHorizontalbox->Add(fileButton);
 		verticalInsideHorizontalbox->Add(_playlist);
