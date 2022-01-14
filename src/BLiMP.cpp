@@ -98,6 +98,8 @@ namespace blimp {
 		wxBoxSizer* playbackControlsBox = new wxBoxSizer(wxHORIZONTAL);
 
 		//Add UI elements to sizers
+		_playlist->SetColumnWidth(0,100);
+		_playlist->SetForegroundColour(BACKGROUND_GREEN);
 		verticalInsideHorizontalbox->Add(fileButton);
 		verticalInsideHorizontalbox->Add(_playlist);
 		timeBox->Add(timeSlider);
@@ -374,7 +376,7 @@ namespace blimp {
 		wxSlider* slider = wxDynamicCast(FindWindow(timeSliderId), wxSlider);
 		wxFileOffset mediaLength = _mediaPlayer->Length();
 		wxFileOffset currentPosition = _mediaPlayer->Tell();
-		wxFileOffset incrementsOfTime = (mediaLength / (slider->GetMax() - slider->GetMin()));
+		double incrementsOfTime = (mediaLength / (slider->GetMax() - slider->GetMin()));
 		double slidervalue = (currentPosition/incrementsOfTime);
 		slider->SetValue(slidervalue);
 		
