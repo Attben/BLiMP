@@ -6,6 +6,7 @@ namespace blimp {
 	class Playlist : public wxListCtrl {
 	public:
 		Playlist(wxWindow* parent, wxWindowID id);
+		~Playlist();
 
 		void Append(const wxString& item);
 		wxString GetItemAt(long index);

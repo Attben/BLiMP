@@ -10,6 +10,13 @@ namespace blimp {
 		//AppendColumn(_("Length"), wxLIST_FORMAT_CENTER, 75);
 	}
 
+	Playlist::~Playlist() {
+		for (long n = 0L; n < GetItemCount(); ++n) {
+			wxString* dataPtr = (wxString*)GetItemData(n);
+			delete dataPtr;
+		}
+	}
+
 	void Playlist::Append(const wxString& path) {
 		wxListItem item;
 		item.SetAlign(wxLIST_FORMAT_LEFT);
