@@ -3,9 +3,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-//#include "../include/AudioSystem.h"
-//#include <SDL.h>
-//#include <SDL_mixer.h>
+
 #include "../include/BLiMP.h"
 #include "../include/OptionsWindow.h"
 #include <filesystem>
@@ -155,8 +153,8 @@ namespace blimp {
 	*Menu items
 	*/
 	void MainWindow::OnAbout(wxCommandEvent& event) {
-		wxMessageBox("This is a wxWidgets Hello World example",
-			"About Hello World", wxOK | wxICON_INFORMATION);
+		wxMessageBox("BLiMP (Bad Lightweight Media Player) version 0.42 alpha",
+			"About BLiMP", wxOK | wxICON_INFORMATION);
 	}
 
 	void MainWindow::OnExit(wxCommandEvent& event) {
@@ -240,7 +238,7 @@ namespace blimp {
 	void MainWindow::OpenFileBrowser(wxCommandEvent& event) {
 		wxFileDialog openFileDialog{
 			this, //parent
-			_("Open sound file"), //Title
+			_("Open media file"), //Title
 			std::filesystem::current_path().c_str(), //Default directory
 			"", //Default file
 			"Sound files (*.wav;*.flac;*.mid;*.mp3;*.ogg)|*.wav;*.flac;*.mid;*.mp3;*.ogg|\
