@@ -241,7 +241,7 @@ namespace blimp {
 			_("Open media file"), //Title
 			std::filesystem::current_path().c_str(), //Default directory
 			"", //Default file
-			"Sound files (*.wav;*.flac;*.mid;*.mp3;*.ogg)|*.wav;*.flac;*.mid;*.mp3;*.ogg|\
+			"Sound files (*.wav;*.flac;*.mid;*.mp3;)|*.wav;*.flac;*.mid;*.mp3;|\
 			Video files(*.mkv;*.mov;*.mp4;*.wmv)|*.mkv;*.mov;*.mp4;*.wmv|\
 			All files (*)|*",
 			wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE
